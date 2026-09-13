@@ -42,7 +42,7 @@ const config: Config = {
       },
       spacing: {
         "grid-margin": "80px",
-        "grid-margin-sm": "24px",
+        "grid-margin-sm": "16px",
         gutter: "20px",
         "gutter-sm": "16px",
         // Vertical rhythm — applied as real padding-top in document flow

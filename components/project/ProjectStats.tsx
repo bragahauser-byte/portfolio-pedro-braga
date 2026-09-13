@@ -21,7 +21,7 @@ export function ProjectStats({ title, stats }: { title: string; stats: BigNumber
                   was splitting "m²" into its own 48px run next to the
                   112px number, which never lined up as a real superscript
                   should (it looked like a second, misaligned number). */}
-              <span className="project-stat-value text-[56px] leading-[64px] tracking-[-0.03em] text-ink sm:text-stat-number">
+              <span className="project-stat-value text-2xl leading-[32px] tracking-[-0.02em] text-ink sm:text-stat-number">
                 {stat.value}
               </span>
               <span className="project-stat-label text-caption text-ink">{stat.label}</span>

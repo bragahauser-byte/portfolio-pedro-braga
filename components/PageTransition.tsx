@@ -2,31 +2,54 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
-import { pageTransitionVariants } from "@/lib/motion";
+import { ReactNode, useLayoutEffect, useRef } from "react";
+import { classifyPageTransition, pageMotionVariants } from "@/lib/motion";
+import { normalizePathname } from "@/lib/paths";
 
 /**
- * Material Design 3 "Shared Axis X" page transition — the recommended
- * pattern for navigating between hierarchy levels (Home → Sobre mim, and
- * any future /projetos/[slug]). Entering and exiting screens use a short
- * offset (not a full-screen slide) with asymmetric easing: decelerate in,
- * accelerate out. Driven purely by usePathname(), so any new route gets
- * this automatically — nothing to reimplement per page.
+ * Directional page transitions, driven purely by usePathname() — nothing
+ * to reimplement per route:
  *
- * mode="wait" avoids overlapping DOM (two full pages mounted at once),
- * which also sidesteps layout-collapse issues from stacking pages with
- * differing heights. Switch to mode="popLayout" if this ever produces a
- * visible blank-screen flash between pages.
+ * - Home <-> Sobre mim behaves like an iOS push/pop: Sobre mim always
+ *   slides in from the right over a static Home, and slides back out to
+ *   reveal it, never a symmetric two-sided slide (see lib/motion.ts for
+ *   the full rationale).
+ * - Anything into or out of a /projetos/[slug] page is a plain crossfade,
+ *   regardless of direction.
+ * - prefers-reduced-motion collapses either of the above into a short
+ *   150ms crossfade with no movement.
+ *
+ * Both the entering and exiting page are mounted at once (`mode="sync"`)
+ * so the outgoing screen can stay visibly static underneath the incoming
+ * one instead of the two swapping abruptly — each page is a fixed,
+ * viewport-covering overlay only while actively transitioning, and normal
+ * in-flow content the rest of the time (see pageMotionVariants).
  */
 export function PageTransition({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname());
   const reducedMotion = useReducedMotion();
-  const variants = pageTransitionVariants(reducedMotion);
+  const prevPathnameRef = useRef<string | null>(null);
+
+  const kind = classifyPageTransition(prevPathnameRef.current, pathname);
+  const variants = pageMotionVariants(pathname, reducedMotion);
+
+  // Runs before paint, right as the new page mounts — a fresh page should
+  // always start scrolled to its own top, and doing this in a layout
+  // effect (not a regular one) avoids a one-frame flash of the outgoing
+  // page's content jumping to align with the new scroll position once it
+  // becomes a viewport-fixed overlay for the transition.
+  useLayoutEffect(() => {
+    if (prevPathnameRef.current !== null && prevPathnameRef.current !== pathname) {
+      window.scrollTo(0, 0);
+    }
+    prevPathnameRef.current = pathname;
+  }, [pathname]);
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="sync" initial={false} custom={kind}>
       <motion.div
         key={pathname}
+        custom={kind}
         initial="initial"
         animate="animate"
         exit="exit"

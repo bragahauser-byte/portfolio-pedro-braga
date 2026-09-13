@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { normalizePathname } from "@/lib/paths";
 import { Grid } from "./Grid";
 
 type Theme = "light" | "dark";
@@ -9,23 +10,25 @@ type Theme = "light" | "dark";
 /**
  * Static by design — no self-contained entrance animation. On Home it's
  * animated externally as the first step of <HomeEntrance>; on every other
- * page, entrance is handled by the whole-screen Shared Axis page
- * transition in PageTransition.tsx. Animating it a second time here would
- * double up and fight those.
+ * page, entrance is handled by the whole-page transition in
+ * PageTransition.tsx. Animating it a second time here would double up and
+ * fight those.
  */
 export function Header({ theme = "light" }: { theme?: Theme }) {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname());
   const router = useRouter();
 
   const isHome = pathname === "/";
   const isSobre = pathname === "/sobre-mim";
 
   // The active link is already at max contrast — no hover state needed.
-  // Inactive links use `.link-hover` (muted → ink/paper on hover *and*
-  // keyboard focus). Every link gets `.focus-ring` for the visible
-  // :focus-visible outline and `.tap-target` for a >=44px mobile hit area.
+  // Inactive links use `.hover-link` (muted → ink/paper on hover *and*
+  // keyboard focus, underline fading in at the same time). Every link
+  // gets `.focus-ring` for the visible :focus-visible outline and
+  // `.tap-target` for a >=44px mobile hit area.
   const activeColor = theme === "dark" ? "text-paper" : "text-ink";
-  const linkBase = "text-[18px] leading-[22px] sm:text-header-name cursor-pointer focus-ring tap-target";
+  const inactiveColor = "text-muted hover-link";
+  const linkBase = "text-base sm:text-header-name cursor-pointer focus-ring tap-target";
 
   function handleContatoClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
@@ -44,18 +47,18 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
         <div className="col-span-2 flex items-center justify-between sm:col-span-6">
           <Link
             href="/"
-            className={`${linkBase} ${isHome ? activeColor : "link-hover"}`}
+            className={`${linkBase} ${isHome ? activeColor : inactiveColor}`}
           >
             Pedro Braga
           </Link>
           <div className="flex items-center gap-6 sm:gap-16">
             <Link
               href="/sobre-mim"
-              className={`${linkBase} ${isSobre ? activeColor : "link-hover"}`}
+              className={`${linkBase} ${isSobre ? activeColor : inactiveColor}`}
             >
               Sobre mim
             </Link>
-            <a href="#contato" onClick={handleContatoClick} className={`${linkBase} link-hover`}>
+            <a href="#contato" onClick={handleContatoClick} className={`${linkBase} ${inactiveColor}`}>
               Contato
             </a>
           </div>

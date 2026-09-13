@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ReactNode } from "react";
-import { entranceContainerVariants, entranceItemVariants } from "@/lib/motion";
+import { EntranceRole, entranceContainerVariants, entranceItemVariants } from "@/lib/motion";
 
 /**
  * Orchestrates the Home page load-in: header → hero → first project image,
@@ -25,18 +25,25 @@ export function HomeEntrance({ children }: { children: ReactNode }) {
   );
 }
 
-/** One staggered step within <HomeEntrance> — header, hero, or first image. */
+/**
+ * One staggered step within <HomeEntrance> — header, hero, first image, or
+ * footer. `role="header"` gets real movement (fade + rise, ~300ms); the
+ * default `"content"` only fades softly in place — no element but the
+ * header should look like it flew in from somewhere.
+ */
 export function EntranceItem({
   children,
   className,
+  role = "content",
 }: {
   children: ReactNode;
   className?: string;
+  role?: EntranceRole;
 }) {
   const reducedMotion = useReducedMotion();
 
   return (
-    <motion.div variants={entranceItemVariants(reducedMotion)} className={className}>
+    <motion.div variants={entranceItemVariants(reducedMotion, role)} className={className}>
       {children}
     </motion.div>
   );

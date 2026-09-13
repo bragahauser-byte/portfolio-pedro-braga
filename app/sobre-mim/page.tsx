@@ -31,12 +31,6 @@ export default function SobreMimPage() {
         <section className="pb-before-footer pt-header-to-content">
           <Grid>
             <BioSection paragraphs={BIO_PARAGRAPHS} />
-            {/* Full name, small and discreet — SEO benefit (readable full name on
-                the page) without repeating it on every route via the Footer. */}
-            <p className="col-span-2 mt-6 text-sm font-normal text-muted sm:col-span-5">
-              Pedro Henrique Braga da Silva — Arquiteto e Urbanista, CAU em
-              processo de registro.
-            </p>
           </Grid>
         </section>
       </main>

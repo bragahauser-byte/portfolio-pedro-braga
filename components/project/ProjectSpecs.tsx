@@ -14,7 +14,7 @@ export function ProjectSpecs({ specs }: { specs: TechSpec[] }) {
           {specs.map((spec) => (
             <div key={spec.label} className="project-spec flex flex-col gap-1 border-t border-ink/10 pt-4">
               <dt className="project-spec-label text-caption text-muted">{spec.label}</dt>
-              <dd className="project-spec-value text-[18px] leading-[24px] text-ink">{spec.value}</dd>
+              <dd className="project-spec-value text-base leading-[24px] text-ink">{spec.value}</dd>
             </div>
           ))}
         </dl>

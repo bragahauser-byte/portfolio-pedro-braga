@@ -12,3 +12,16 @@ export const BASE_PATH = "/portfolio-pedro-braga";
 export function withBasePath(path: string): string {
   return `${BASE_PATH}${path}`;
 }
+
+/**
+ * Strips the trailing slash `usePathname()` returns under this site's
+ * `trailingSlash: true` (next.config.mjs) — e.g. "/sobre-mim/", not
+ * "/sobre-mim" — so exact route comparisons (active nav state, page
+ * transition direction) don't silently fail. Leaves "/" itself alone.
+ */
+export function normalizePathname(pathname: string): string {
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}

@@ -12,7 +12,7 @@ export function BioSection({ paragraphs }: { paragraphs: string[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-          className="text-[19px] leading-[27px] text-justify text-muted sm:text-bio"
+          className="text-base leading-[26px] text-justify text-paper sm:text-bio"
         >
           {paragraph}
         </motion.p>

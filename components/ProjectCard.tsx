@@ -15,12 +15,6 @@ const SCROLL_REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
 const IMAGE_HOVER =
   "transition-transform duration-300 ease-out group-hover:scale-[1.02] group-focus-visible:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none";
 
-// Same editorial hover treatment as the FMU link in HeroText: no color
-// change (keeps whatever text color it's given), just an underline that
-// eases in on hover/focus instead of appearing "dry".
-const CAPTION_LINK =
-  "cursor-pointer focus-ring underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] duration-150 ease-out hover:decoration-current";
-
 /**
  * Image and caption for a project card. Split out so both the
  * "whole-card-is-one-link" layout and the "author is a separate external
@@ -28,7 +22,7 @@ const CAPTION_LINK =
  */
 function CardImage({ project, priority }: { project: Project; priority: boolean }) {
   const image = <ProjectImage project={project} priority={priority} className={IMAGE_HOVER} />;
-  const className = "relative aspect-[16/10] w-full overflow-hidden bg-[#8D8D8D]";
+  const className = "relative aspect-[16/10] w-full overflow-hidden bg-[#8D8D8D] mobile-bleed";
 
   if (priority) {
     // No self-entrance animation — priority cards are staggered in by the
@@ -94,11 +88,11 @@ export function ProjectCard({
             href={project.cardAuthorHref}
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-caption text-ink ${CAPTION_LINK}`}
+            className="cursor-pointer text-caption text-ink hover-link focus-ring"
           >
             {project.cardAuthor}
           </a>
-          <Link href={href} className={`text-caption text-muted ${CAPTION_LINK}`}>
+          <Link href={href} className="cursor-pointer text-caption text-muted hover-link focus-ring">
             {project.cardLabel}
           </Link>
         </div>
@@ -116,8 +110,8 @@ export function ProjectCard({
         <CardImage project={project} priority={priority} />
       </div>
       <div className="order-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
-        <span className="text-caption text-ink">{project.cardAuthor}</span>
-        <span className="text-caption text-muted">{project.cardLabel}</span>
+        <span className="text-caption text-ink hover-link">{project.cardAuthor}</span>
+        <span className="text-caption text-muted hover-link">{project.cardLabel}</span>
       </div>
     </Link>
   );

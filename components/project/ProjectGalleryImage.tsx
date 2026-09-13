@@ -4,7 +4,7 @@ import type { SectionImageVariant } from "@/data/projects";
 
 type GalleryPhoto = { src: string; alt: string };
 
-const PHOTO_FRAME = "relative aspect-[3/2] w-full overflow-hidden bg-[#8D8D8D]";
+const PHOTO_FRAME = "relative aspect-[3/2] w-full overflow-hidden bg-[#8D8D8D] mobile-bleed";
 
 /** One full-width photo. */
 function FullBleedImage({ image }: { image: GalleryPhoto }) {

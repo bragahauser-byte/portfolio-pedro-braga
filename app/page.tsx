@@ -5,6 +5,7 @@ import { Grid } from "@/components/Grid";
 import { ProjectCard } from "@/components/ProjectCard";
 import { HeroText } from "@/components/HeroText";
 import { HomeEntrance, EntranceItem } from "@/components/HomeEntrance";
+import { ScrollFadeIn } from "@/components/ScrollFadeIn";
 import { projects } from "@/data/projects";
 import { buildMetadata } from "@/lib/seo";
 
@@ -25,7 +26,7 @@ export default function HomePage() {
           nothing "swallows" these values) + the Home entrance stagger.
         */}
         <HomeEntrance>
-          <EntranceItem>
+          <EntranceItem role="header">
             <Header theme="light" />
           </EntranceItem>
 
@@ -64,7 +65,9 @@ export default function HomePage() {
         )}
       </main>
 
-      <Footer />
+      <ScrollFadeIn>
+        <Footer />
+      </ScrollFadeIn>
     </div>
   );
 }

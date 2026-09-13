@@ -7,7 +7,7 @@ export function HeroText() {
         href="https://portal.fmu.br/"
         target="_blank"
         rel="noopener noreferrer"
-        className="cursor-pointer underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] duration-150 ease-out hover:decoration-current focus-ring"
+        className="cursor-pointer hover-link focus-ring"
       >
         FMU – FIAM FAAM
       </a>

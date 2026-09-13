@@ -21,7 +21,7 @@ export function Footer() {
               href={item.href}
               target={item.href.startsWith("http") ? "_blank" : undefined}
               rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="link-hover focus-ring tap-target cursor-pointer text-[18px] leading-[22px] sm:text-header-name"
+              className="text-muted hover-link focus-ring tap-target cursor-pointer text-base sm:text-header-name"
             >
               {item.label}
             </a>

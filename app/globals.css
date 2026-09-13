@@ -49,15 +49,43 @@ body {
     outline-offset: 2px;
   }
 
-  /* Text links (header nav, footer): muted → ink/paper on hover *and*
-     keyboard focus, fast enough to feel immediate but not abrupt. */
-  .link-hover {
-    color: var(--color-muted);
-    transition: color 150ms ease-out;
+  /* Single hover recipe for every clickable text on the site (header nav,
+     footer, inline links like "FMU – FIAM FAAM", project card captions):
+     color eases from whatever tone the element rests at toward the
+     context's "active" tone (--color-focus: ink on light, paper on dark),
+     while an underline fades in underneath — both at once, same easing.
+     Resting color is NOT set here (that stays with text-ink/text-muted/
+     inherited at each call site) so this is pure hover *mechanism*, reusable
+     regardless of an element's base tone. The underline is reserved via
+     `decoration-transparent` at rest (not by toggling text-decoration-line)
+     so its fade-in is a color transition too, with zero layout shift. */
+  .hover-link {
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
   }
-  .link-hover:hover,
-  .link-hover:focus-visible {
+  .hover-link:hover,
+  .hover-link:focus-visible {
     color: var(--color-focus);
+    text-decoration-color: currentColor;
+  }
+
+  /* Mobile exception to the Grid's side margin: images run edge-to-edge
+     on small screens (text siblings keep the margin) — cancels the
+     Grid's mobile padding (`grid-margin-sm` in tailwind.config.ts; keep
+     the two in sync) and resets to normal from `sm:` up. */
+  .mobile-bleed {
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 32px);
+  }
+  @media (min-width: 640px) {
+    .mobile-bleed {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
   }
 
   /* Guarantees a >=44x44px hit area on touch screens without changing

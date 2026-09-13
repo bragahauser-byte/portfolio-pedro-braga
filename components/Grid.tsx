@@ -2,11 +2,13 @@ import { ElementType, HTMLAttributes, ReactNode } from "react";
 
 /**
  * Site-wide grid: 80px side margin / 6 columns / 20px gutter on desktop
- * (Figma spec). Collapses to a 24px margin / 2 columns / 16px gutter on
+ * (Figma spec). Collapses to a 16px margin / 2 columns / 16px gutter on
  * small screens, preserving the same relative proportions.
  *
  * Every page and project component MUST use this instead of hardcoding
  * margins, so new project pages stay pixel-consistent with Home/Sobre mim.
+ * Images are the one deliberate exception: apply `.mobile-bleed` (globals.css)
+ * to a grid item's image wrapper to run it edge-to-edge on mobile instead.
  */
 export function Grid({
   children,
