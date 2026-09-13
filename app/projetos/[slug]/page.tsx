@@ -92,7 +92,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           />
         ))}
 
-        <ProjectSoftware value={project.software.value} label={project.software.label} />
+        <ProjectSoftware
+          value={project.software.value}
+          label={project.software.label}
+          creditLine={project.creditLine}
+        />
       </main>
 
       <Footer />

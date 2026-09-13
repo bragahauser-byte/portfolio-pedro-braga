@@ -11,9 +11,12 @@ export function ProjectStats({ title, stats }: { title: string; stats: BigNumber
         <h2 className="project-stats-title mb-8 text-[24px] leading-[28px] text-ink sm:mb-12 sm:text-section-title">
           {title}
         </h2>
-        <div className="project-stats-list flex flex-wrap items-end gap-x-12 gap-y-8 sm:gap-x-20">
+        {/* flex-wrap (not a fixed grid-template-columns) so this holds up
+            for any stat count — 3 today, 4 on Eixo Oratório — wrapping to
+            a new row instead of ever shrinking a number to force-fit one. */}
+        <div className="project-stats-list flex flex-wrap items-end gap-x-12 gap-y-8 sm:gap-x-16">
           {stats.map((stat) => (
-            <div key={stat.label} className="project-stat flex flex-col">
+            <div key={stat.label} className="project-stat flex shrink-0 flex-col">
               {/* Plain string, one run, one font size — "²" (U+00B2) is
                   already a small raised glyph baked into the font itself,
                   so it renders as a proper superscript with zero custom

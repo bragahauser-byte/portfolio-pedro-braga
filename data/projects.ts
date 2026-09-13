@@ -37,6 +37,17 @@ export type TechSpec = {
   value: string;
 };
 
+/**
+ * Authorship credit for a project Pedro didn't design himself (e.g. an
+ * outside office's project where he only did modelagem/desenho técnico) —
+ * rendered as a small, muted line under the software credit, with a link
+ * on the office name. Omit entirely for Pedro's own/TFG projects.
+ */
+export type CreditLine = {
+  authorName: string;
+  authorHref: string;
+};
+
 export type BigNumber = {
   value: string;
   label: string;
@@ -73,6 +84,8 @@ export type Project = {
   /** Optional second, denser spec sheet (only some projects have one) */
   detailedSpecs?: TechSpec[];
   software: { value: string; label: string };
+  /** Only set when Pedro wasn't the project's author — see CreditLine. */
+  creditLine?: CreditLine;
   /** Remaining photos beyond heroImage, shown alongside `sections` */
   gallery: string[];
   /** Display order on the Home page */
@@ -136,7 +149,7 @@ export const projects: Project[] = [
       },
       {
         title: "Os usos do edifício",
-        body: "Além do térreo comercial, o multifuncional reúne escritórios, auditório, espaços expositivos e ambientes multiuso. No primeiro pavimento, uma academia e uma livraria ancoram áreas flexíveis para exposições e apresentações artísticas.",
+        body: "Além do térreo comercial, o multifuncional reúne escritórios, coworking, auditório, espaços expositivos e ambientes multiuso. No primeiro pavimento, uma academia e uma livraria ancoram áreas flexíveis para exposições e apresentações artísticas.",
         images: {
           variant: "full-bleed",
           photos: ["/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg"],
@@ -154,6 +167,7 @@ export const projects: Project[] = [
     bigNumbers: [
       { value: "136", label: "Apartamentos" },
       { value: "28.995m²", label: "Área construída" },
+      { value: "110", label: "Salas comerciais" },
       { value: "16", label: "Lojas comerciais" },
     ],
     authorship: {
@@ -164,8 +178,8 @@ export const projects: Project[] = [
       { label: "Local", value: "São Paulo, SP" },
       { label: "Uso", value: "Misto" },
       { label: "Área do terreno", value: "7.406,84 m²" },
-      { label: "CA", value: "3,91 (28.995,04 m²)" },
-      { label: "TO", value: "0,67" },
+      { label: "CA (Coeficiente de Aproveitamento)", value: "3,91 (28.995,04 m²)" },
+      { label: "TO (Taxa de Ocupação)", value: "0,67" },
       {
         label: "Composição",
         value:
@@ -175,20 +189,27 @@ export const projects: Project[] = [
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
     // Every photo above is already placed via `sections[].images` — this
     // array is just the technical drawings (plantas/cortes/elevações),
-    // trailing after the stats/specs blocks, paired up in reading order.
+    // trailing after the stats/specs blocks. Ordered by the sheet number
+    // printed on each prancha itself (checked against the actual files,
+    // not the filenames): Térreo(1) → Subsolo(2) → 1º Pav.(3) →
+    // 2º Pav.(4) → Pavimento Tipo(5) → Pavimento Tipo Resid.(7, its
+    // typology legend has no number of its own but reads right after it)
+    // → Corte A(8) → Corte B(9) → Elevação Norte(10) → Leste(12) →
+    // Oeste(13) — the standard low-to-high, plans-then-cortes-then-
+    // elevações reading order for an architecture drawing set.
     gallery: [
-      "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
-      "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
-      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
-      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
-      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
-      "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
-      "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
-      "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
-      "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
       "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
+      "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
       "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
       "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
+      "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
+      "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
+      "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
+      "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
+      "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
+      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
+      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
     ],
     order: 1,
   },
@@ -217,12 +238,12 @@ export const projects: Project[] = [
       {
         title: "Os materiais",
         body: "A linguagem contemporânea incorpora referências industriais por meio das estruturas metálicas, esquadrias e elementos em preto, equilibradas pela presença da madeira, da vegetação e de uma iluminação predominantemente quente. O paisagismo participa dos ambientes e contribui para tornar o conjunto mais leve e convidativo — mais do que uma nova função para o quintal, um espaço de permanência.",
+        // Era um "díptico" com a mesma foto (ângulos ligeiramente
+        // diferentes) repetida nas duas colunas — mantém só uma ocorrência,
+        // full-bleed, em vez do par.
         images: {
-          variant: "diptico-simetrico",
-          photos: [
-            "/images/projects/area-gourmet-gj/spa-pergolado-noturno.jpg",
-            "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg",
-          ],
+          variant: "full-bleed",
+          photos: ["/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg"],
         },
       },
     ],
@@ -236,6 +257,10 @@ export const projects: Project[] = [
       body: "Responsável por todas as etapas do projeto, da concepção à escolha de materiais, buscando equilibrar linguagem industrial e acolhimento no mesmo espaço.",
     },
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
+    creditLine: {
+      authorName: "Nathalia Trota Arquitetura",
+      authorHref: "https://www.nathaliatrottaarquiteta.com.br/",
+    },
     // Every photo above is already placed via `sections[].images` — this
     // array is just the technical drawings, trailing after stats/specs.
     gallery: [
