@@ -52,6 +52,14 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
   }
 
   const galleryChunks = chunkIntoPairs(project.gallery);
+  // One chunk per section, by position — NOT `% galleryChunks.length`,
+  // which silently dropped every chunk past `sections.length` whenever a
+  // project had more image pairs than text sections (exactly what made
+  // photos that were added to `gallery` never actually render). Any chunk
+  // left over after the sections run out is appended afterward instead,
+  // so every image in `gallery` ends up on the page exactly once.
+  const sectionChunks = galleryChunks.slice(0, project.sections.length);
+  const extraChunks = galleryChunks.slice(project.sections.length);
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -61,7 +69,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <ProjectHero project={project} />
 
         {project.sections.map((section, index) => {
-          const chunk = galleryChunks.length > 0 ? galleryChunks[index % galleryChunks.length] : [];
+          const chunk = sectionChunks[index] ?? [];
           return (
             <div key={section.title}>
               <ProjectSection section={section} align={index % 2 === 0 ? "left" : "right"} />
@@ -79,6 +87,18 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <ProjectAuthorship title={project.authorship.title} body={project.authorship.body} />
 
         {project.detailedSpecs && <ProjectSpecs specs={project.detailedSpecs} />}
+
+        {/* Any gallery images beyond what the sections above could pair up with
+            (e.g. plantas/cortes technical drawings) close out the page here. */}
+        {extraChunks.map((chunk, chunkIndex) => (
+          <ProjectGalleryImage
+            key={chunk.join("|")}
+            images={chunk.map((src, photoIndex) => ({
+              src,
+              alt: `${project.title} — imagem adicional ${chunkIndex * 2 + photoIndex + 1}`,
+            }))}
+          />
+        ))}
 
         <ProjectSoftware value={project.software.value} label={project.software.label} />
       </main>

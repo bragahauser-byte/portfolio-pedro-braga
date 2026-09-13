@@ -1,19 +1,6 @@
 import { GridMargin } from "@/components/Grid";
 import type { BigNumber } from "@/data/projects";
 
-// Splits a value like "106m²" into a giant number + a smaller unit run,
-// matching the Figma treatment (112px number, 48px unit). Falls back to
-// rendering the whole string at the number size when there's no unit —
-// plain string matching, not a layout calculation, so it stays easy to
-// swap out once the real CSS lands.
-function splitValue(value: string): { number: string; unit: string | null } {
-  const match = value.match(/^([\d.,]+)\s*(m²|%)?$/);
-  if (match && match[2]) {
-    return { number: match[1], unit: match[2] };
-  }
-  return { number: value, unit: null };
-}
-
 export function ProjectStats({ title, stats }: { title: string; stats: BigNumber[] }) {
   return (
     <section className="project-stats py-section-spacing">
@@ -25,24 +12,21 @@ export function ProjectStats({ title, stats }: { title: string; stats: BigNumber
           {title}
         </h2>
         <div className="project-stats-list flex flex-wrap items-end gap-x-12 gap-y-8 sm:gap-x-20">
-          {stats.map((stat) => {
-            const { number, unit } = splitValue(stat.value);
-            return (
-              <div key={stat.label} className="project-stat flex flex-col">
-                <div className="flex items-end">
-                  <span className="project-stat-value text-[56px] leading-[64px] tracking-[-0.03em] text-ink sm:text-stat-number">
-                    {number}
-                  </span>
-                  {unit && (
-                    <span className="project-stat-unit text-[24px] leading-[28px] tracking-[-0.03em] text-ink sm:text-stat-unit">
-                      {unit}
-                    </span>
-                  )}
-                </div>
-                <span className="project-stat-label text-caption text-ink">{stat.label}</span>
-              </div>
-            );
-          })}
+          {stats.map((stat) => (
+            <div key={stat.label} className="project-stat flex flex-col">
+              {/* Plain string, one run, one font size — "²" (U+00B2) is
+                  already a small raised glyph baked into the font itself,
+                  so it renders as a proper superscript with zero custom
+                  CSS. No <sup>, no separate differently-sized span: that
+                  was splitting "m²" into its own 48px run next to the
+                  112px number, which never lined up as a real superscript
+                  should (it looked like a second, misaligned number). */}
+              <span className="project-stat-value text-[56px] leading-[64px] tracking-[-0.03em] text-ink sm:text-stat-number">
+                {stat.value}
+              </span>
+              <span className="project-stat-label text-caption text-ink">{stat.label}</span>
+            </div>
+          ))}
         </div>
       </GridMargin>
     </section>

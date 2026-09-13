@@ -35,18 +35,39 @@ export function LightboxImage({
     if (!open) return;
 
     closeRef.current?.focus();
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    // Plain `overflow: hidden` on <body> isn't enough on mobile Safari: if
+    // the page was already scrolled when the lightbox opens, iOS has a
+    // long-standing bug where `position: fixed` elements can render
+    // pinned to the *document's* scroll position instead of the actual
+    // visual viewport, so the overlay ends up not covering the full
+    // screen (gaps above/below, close button floating over page text —
+    // exactly the "doesn't work" symptom on phones). Freezing <body> at
+    // its current scroll offset (the standard fix for this class of bug)
+    // keeps the fixed overlay correctly pinned to the viewport, and we
+    // restore the scroll position on close.
+    const scrollY = window.scrollY;
+    const body = document.body.style;
+    const previous = { position: body.position, top: body.top, width: body.width, overflow: body.overflow };
+    body.position = "fixed";
+    body.top = `-${scrollY}px`;
+    body.width = "100%";
+    body.overflow = "hidden";
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     }
     document.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      body.position = previous.position;
+      body.top = previous.top;
+      body.width = previous.width;
+      body.overflow = previous.overflow;
+      window.scrollTo(0, scrollY);
       document.removeEventListener("keydown", onKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function close() {

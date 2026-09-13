@@ -110,12 +110,33 @@ export const projects: Project[] = [
       },
     ],
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
+    // Photos first (paired with the text sections above, in order), then
+    // technical drawings (plantas/cortes/elevações) trailing at the end —
+    // /app/projetos/[slug] pairs one gallery chunk per section and appends
+    // any leftover chunks afterward, so ordering here is what controls
+    // where each image ends up on the page.
     gallery: [
       "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg",
       "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg",
       "/images/projects/eixo-oratorio/galeria-expositiva-interior.jpg",
       "/images/projects/eixo-oratorio/passagem-publica-terreo.jpg",
       "/images/projects/eixo-oratorio/fachada-rua-angulo-alternativo.jpg",
+      "/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg",
+      "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
+      "/images/projects/eixo-oratorio/fachadas-comparativo.jpg",
+      "/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg",
+      "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
+      "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
+      "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
+      "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
+      "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
+      "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
+      "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
+      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
+      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
+      "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
+      "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
     ],
     order: 1,
   },
@@ -147,11 +168,16 @@ export const projects: Project[] = [
       body: "Responsável por todas as etapas do projeto, da concepção à escolha de materiais, buscando equilibrar linguagem industrial e acolhimento no mesmo espaço.",
     },
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
+    // Photos first (paired with the sections above), technical drawings trailing.
     gallery: [
       "/images/projects/area-gourmet-gj/cozinha-sala-de-jogos.jpg",
       "/images/projects/area-gourmet-gj/cozinha-ilha-detalhe.jpg",
       "/images/projects/area-gourmet-gj/spa-pergolado-noturno.jpg",
+      "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg",
       "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
+      "/images/projects/area-gourmet-gj/planta-baixa.jpg",
+      "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",
+      "/images/projects/area-gourmet-gj/planta-coberturas.jpg",
     ],
     order: 2,
   },
