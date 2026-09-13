@@ -23,6 +23,11 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
+      # Belt-and-suspenders: /public/.nojekyll already lands in ./out via
+      # the Next.js build, but guarantee it either way so a future change
+      # to /public can't silently drop it and bring back the "GitHub
+      # renders README as the site" failure mode.
+      - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
