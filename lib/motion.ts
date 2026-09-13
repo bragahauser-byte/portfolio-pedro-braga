@@ -89,15 +89,24 @@ const REDUCED_MOTION_FADE_DURATION = 0.15;
 // only becomes a fixed, viewport-covering overlay while it's actively
 // entering or exiting — that's what lets two pages occupy the same screen
 // space during the transition without permanently changing how the site
-// scrolls the rest of the time. Explicit 0s (not the `inset` shorthand,
-// and never "auto") on the overlay side — framer-motion treats inset/top/
-// left/etc as animatable lengths and errors trying to tween one to "auto".
-// The static side simply omits them: framer-motion never animates a
-// property a variant doesn't mention, so any leftover `top/left/right/
-// bottom: 0` from a prior overlay phase is just left in place — harmless
-// on a `position: relative` box, since equal left/right (or top/bottom)
-// offsets of 0 are a no-op there.
-const OVERLAY_POSITION = { position: "fixed" as const, top: 0, left: 0, right: 0, bottom: 0 };
+// scrolls the rest of the time. Sized with `top`/`left`/`width`/`height`
+// (never `right`/`bottom`/the `inset` shorthand): framer-motion never
+// animates a property a variant doesn't mention, so once this box is back
+// to `position: relative`, whatever the overlay phase set stays in the
+// inline style — measured in the browser, a leftover `right: 0` alongside
+// `left: 0` (e.g. from the old `inset: 0` shorthand) is NOT the harmless
+// no-op it looks like: constraining BOTH horizontal edges shrank this
+// box's width by the scrollbar's width and pinned it to the left edge,
+// breaking the Grid's `mx-auto` centering (every image/text block visibly
+// off) on every client-side navigation, in production too. A leftover
+// `top: 0; left: 0` (no opposing edge ever set) is a true no-op on a
+// `position: relative` box, and a leftover `width/height: 100%` is a
+// no-op too — this wrapper's children already size themselves to 100%
+// of it in normal flow, and `height: 100%` against `<body>`'s auto
+// height doesn't resolve to anything per the CSS spec. Explicit 0/100%
+// (never "auto") throughout — framer-motion treats these as animatable
+// lengths and errors trying to tween one to "auto".
+const OVERLAY_POSITION = { position: "fixed" as const, top: 0, left: 0, width: "100%", height: "100%" };
 const STATIC_POSITION = { position: "relative" as const };
 
 /**

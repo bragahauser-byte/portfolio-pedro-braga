@@ -47,14 +47,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
   return (
     <AnimatePresence mode="sync" initial={false} custom={kind}>
-      <motion.div
-        key={pathname}
-        custom={kind}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={variants}
-      >
+      <motion.div key={pathname} custom={kind} initial="initial" animate="animate" exit="exit" variants={variants}>
         {children}
       </motion.div>
     </AnimatePresence>

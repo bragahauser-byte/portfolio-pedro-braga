@@ -4,10 +4,21 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html,
-body {
+  /* Only `html` gets this — it alone is enough to stop horizontal scroll
+     site-wide. Setting it on `body` too (as this used to) forces `body`'s
+     computed overflow-y to 'auto' (setting only one axis to non-'visible'
+     computes the other the same way), and since a non-'visible' overflow
+     on the root element means `body`'s overflow-y no longer propagates up
+     to the viewport, `body` ends up establishing its OWN independent
+     scrolling box, nested inside the real one. Confirmed in the browser:
+     that extra box gets its own scrollbar reservation whenever `body`'s
+     content needs one (reliably after a client-side route change, since
+     the outgoing and incoming pages briefly coexist) — `body.clientWidth`
+     drops a scrollbar's-width below `documentElement.clientWidth`, and
+     since every percentage width on the page resolves against `body`'s
+     content box, the Grid's centering and every image/text block inside
+     it were measurably off (never touching the true site-wide margins)
+     until the next full page load reset it. */
   overflow-x: hidden;
 }
 

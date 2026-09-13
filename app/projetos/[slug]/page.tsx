@@ -60,11 +60,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       <main>
         <ProjectHero project={project} />
 
-        {project.sections.map((section, index) => {
+        {project.sections.map((section) => {
           const photos = section.images?.photos ?? [];
           return (
             <div key={section.title}>
-              <ProjectSection section={section} align={index % 2 === 0 ? "left" : "right"} />
+              <ProjectSection section={section} />
               <ProjectGalleryImage
                 variant={section.images?.variant}
                 images={photos.map((src, photoIndex) => ({

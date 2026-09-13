@@ -83,7 +83,7 @@ export function ProjectCard({
         >
           <CardImage project={project} priority={priority} />
         </Link>
-        <div className="order-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
+        <div className="order-1 flex flex-wrap items-baseline gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
           <a
             href={project.cardAuthorHref}
             target="_blank"
@@ -109,7 +109,7 @@ export function ProjectCard({
       <div className="order-2 sm:order-1">
         <CardImage project={project} priority={priority} />
       </div>
-      <div className="order-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
+      <div className="order-1 flex flex-wrap items-baseline gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
         <span className="text-caption text-ink hover-link">{project.cardAuthor}</span>
         <span className="text-caption text-muted hover-link">{project.cardLabel}</span>
       </div>
