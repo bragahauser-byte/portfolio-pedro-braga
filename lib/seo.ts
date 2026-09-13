@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
-// TODO: swap for the real production domain once it's registered/deployed.
-export const SITE_URL = "https://pedrobraga.com.br";
+// TODO: swap for the real production domain once it's registered/deployed
+// (and drop the /portfolio-pedro-braga subpath + basePath in next.config.mjs
+// together with it). For now this points at the actual GitHub Pages URL so
+// canonical/OG/sitemap tags aren't self-contradictory on the live site.
+export const SITE_URL = "https://bragahauser-byte.github.io/portfolio-pedro-braga";
 
 export const SITE_NAME = "Pedro Braga";
 
@@ -26,7 +29,12 @@ export function buildMetadata({
 } = {}): Metadata {
   const resolvedTitle = title ?? DEFAULT_TITLE;
   const resolvedDescription = description ?? DEFAULT_DESCRIPTION;
-  const url = new URL(path, SITE_URL).toString();
+  // Plain concatenation, not `new URL(path, SITE_URL)`: since SITE_URL
+  // itself has a path (the GitHub Pages /portfolio-pedro-braga subpath),
+  // the URL constructor would replace that path entirely with `path`
+  // instead of appending to it (absolute paths override a base's path
+  // per the URL spec), silently dropping the subpath.
+  const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
 
   return {
     title: resolvedTitle,
@@ -41,11 +49,19 @@ export function buildMetadata({
       siteName: SITE_NAME,
       locale: "pt_BR",
       type: "website",
+      // Static asset, not a build-time-generated route: `next/og`'s
+      // ImageResponse (used for a `opengraph-image.tsx` route) hits an
+      // upstream Windows bug under `output: "export"` (crashes the whole
+      // build via `fileURLToPath` inside Next's bundled @vercel/og). This
+      // PNG was rendered once with the same design via standalone
+      // satori + @resvg/resvg-js and committed as a plain static file.
+      images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: resolvedTitle,
       description: resolvedDescription,
+      images: [`${SITE_URL}/og-image.png`],
     },
   };
 }

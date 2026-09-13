@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "@/components/PageTransition";
-import { buildMetadata, personJsonLd } from "@/lib/seo";
+import { buildMetadata, personJsonLd, SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,7 +14,7 @@ const inter = Inter({
 export function generateMetadata(): Metadata {
   return {
     ...buildMetadata(),
-    metadataBase: new URL("https://pedrobraga.com.br"),
+    metadataBase: new URL(SITE_URL),
   };
 }
 

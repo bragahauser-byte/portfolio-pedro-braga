@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Project } from "@/data/projects";
+import { withBasePath } from "@/lib/paths";
 
 const SCROLL_REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -63,7 +64,7 @@ export function ProjectCard({
 function ProjectImage({ project, priority = false }: { project: Project; priority?: boolean }) {
   return (
     <Image
-      src={project.coverImage}
+      src={withBasePath(project.coverImage)}
       alt={`${project.title} — ${project.author}`}
       fill
       priority={priority}
