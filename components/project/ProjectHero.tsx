@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { Grid } from "@/components/Grid";
-import { withBasePath } from "@/lib/paths";
+import { LightboxImage } from "@/components/project/LightboxImage";
 import type { Project } from "@/data/projects";
 
 export function ProjectHero({ project }: { project: Project }) {
@@ -25,14 +24,7 @@ export function ProjectHero({ project }: { project: Project }) {
 
       <Grid>
         <div className="project-hero-image col-span-2 relative aspect-[3/2] w-full overflow-hidden bg-[#8D8D8D] sm:col-span-6">
-          <Image
-            src={withBasePath(project.heroImage)}
-            alt={project.title}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          <LightboxImage src={project.heroImage} alt={project.title} priority />
         </div>
       </Grid>
     </>

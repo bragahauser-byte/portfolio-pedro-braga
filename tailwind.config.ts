@@ -28,6 +28,8 @@ const config: Config = {
       },
       fontSize: {
         // [fontSize, { lineHeight, letterSpacing }]
+        // Shared by Header AND Footer (nav-level links) — read from this
+        // one token in both so they can't drift out of sync again.
         "header-name": ["24px", { lineHeight: "29px" }],
         hero: ["32px", { lineHeight: "39px" }],
         "name-xl": ["96px", { lineHeight: "116px", letterSpacing: "-0.05em" }],
@@ -45,7 +47,10 @@ const config: Config = {
         "gutter-sm": "16px",
         // Vertical rhythm — applied as real padding-top in document flow
         // (never as a flex/grid gap, so these stay exact and predictable).
-        "header-top": "40px", // header distance from the very top of the page
+        // Shared by Header (pt only — bottom spacing is the 164px content
+        // gap below) AND Footer (py, since it's the page's closing block).
+        // One token, one value — editing it can't desync the two again.
+        "nav-padding-y": "40px",
         "header-to-content": "164px", // header → hero text (Home) / header → bio (Sobre mim)
         "hero-to-image": "132px", // hero text → first project image (Home)
         "section-spacing": "132px", // vertical rhythm between blocks on project pages (Figma)

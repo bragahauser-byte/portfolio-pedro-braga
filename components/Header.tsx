@@ -39,7 +39,7 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full pb-0 pt-header-top">
+    <header className="sticky top-0 z-50 w-full pb-0 pt-nav-padding-y">
       <Grid as="nav">
         <div className="col-span-2 flex items-center justify-between sm:col-span-6">
           <Link

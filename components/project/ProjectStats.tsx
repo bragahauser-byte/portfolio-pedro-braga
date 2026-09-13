@@ -1,3 +1,4 @@
+import { GridMargin } from "@/components/Grid";
 import type { BigNumber } from "@/data/projects";
 
 // Splits a value like "106m²" into a giant number + a smaller unit run,
@@ -17,7 +18,9 @@ export function ProjectStats({ title, stats }: { title: string; stats: BigNumber
   return (
     <section className="project-stats py-section-spacing">
       {/* Estilo provisório — será substituído pelo CSS exportado do Figma */}
-      <div className="mx-auto w-full max-w-site px-grid-margin-sm sm:px-grid-margin">
+      {/* <GridMargin>, not a hand-rolled div — same margin the title/text
+          blocks sit in, so stats align to the same column as everything else. */}
+      <GridMargin>
         <h2 className="project-stats-title mb-8 text-[24px] leading-[28px] text-ink sm:mb-12 sm:text-section-title">
           {title}
         </h2>
@@ -41,7 +44,7 @@ export function ProjectStats({ title, stats }: { title: string; stats: BigNumber
             );
           })}
         </div>
-      </div>
+      </GridMargin>
     </section>
   );
 }
