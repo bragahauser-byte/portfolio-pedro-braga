@@ -1,20 +1,20 @@
 import { Grid } from "./Grid";
 
-// TODO: replace with Pedro's real links once provided.
 const CONTACT_LINKS = [
-  { label: "Email", href: "mailto:contato@pedrobraga.com.br" }, // TODO: link real
-  { label: "LinkedIn", href: "#" }, // TODO: link real
-  { label: "Instagram", href: "#" }, // TODO: link real
+  { label: "Email", href: "mailto:phbraga93@gmail.com" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/pedro-braga10/" },
+  { label: "Instagram", href: "https://www.instagram.com/ph_braga10/" },
 ];
 
-// Typography, vertical padding, and item gap read from the exact same
-// tokens as Header.tsx (text-header-name, py-nav-padding-y, gap-6/gap-16)
-// so the two can't drift out of sync again.
+// Typography and vertical padding read from the exact same tokens as
+// Header.tsx (text-header-name, py-nav-padding-y) so the two can't drift
+// out of sync again. The item gap (112px) is footer-specific — the
+// header's own nav gap (64px) is a different, unrelated value.
 export function Footer() {
   return (
     <footer id="contato" className="w-full py-nav-padding-y">
       <Grid>
-        <div className="col-span-2 flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-span-6 sm:gap-x-16">
+        <div className="col-span-2 flex flex-wrap items-center gap-x-8 gap-y-3 sm:col-span-6 sm:gap-x-footer-gap">
           {CONTACT_LINKS.map((item) => (
             <a
               key={item.label}

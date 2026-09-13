@@ -6,7 +6,6 @@ import { ProjectHero } from "@/components/project/ProjectHero";
 import { ProjectSection } from "@/components/project/ProjectSection";
 import { ProjectGalleryImage } from "@/components/project/ProjectGalleryImage";
 import { ProjectStats } from "@/components/project/ProjectStats";
-import { ProjectAuthorship } from "@/components/project/ProjectAuthorship";
 import { ProjectSpecs } from "@/components/project/ProjectSpecs";
 import { ProjectSoftware } from "@/components/project/ProjectSoftware";
 import { getProjectBySlug, projects } from "@/data/projects";
@@ -84,7 +83,6 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         })}
 
         <ProjectStats title="Números do projeto" stats={project.bigNumbers} />
-        <ProjectAuthorship title={project.authorship.title} body={project.authorship.body} />
 
         {project.detailedSpecs && <ProjectSpecs specs={project.detailedSpecs} />}
 

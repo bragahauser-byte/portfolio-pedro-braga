@@ -28,7 +28,7 @@ export default function SobreMimPage() {
 
       <main>
         {/* Same 164px header→content distance used on Home, for vertical consistency between screens. */}
-        <section className="pb-24 pt-header-to-content">
+        <section className="pb-before-footer pt-header-to-content">
           <Grid>
             <BioSection paragraphs={BIO_PARAGRAPHS} />
             {/* Full name, small and discreet — SEO benefit (readable full name on

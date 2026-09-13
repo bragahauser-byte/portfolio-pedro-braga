@@ -41,7 +41,10 @@ export default function HomePage() {
 
           {firstProject && (
             <EntranceItem>
-              <div className="pb-24 pt-hero-to-image">
+              {/* Only bears the min-232px-before-footer spacing itself when
+                  it's the last project on the page (no restProjects) — see
+                  the section below, which is the more common case. */}
+              <div className={`pt-hero-to-image ${restProjects.length > 0 ? "pb-24" : "pb-before-footer"}`}>
                 <Grid>
                   <ProjectCard project={firstProject} priority />
                 </Grid>
@@ -51,7 +54,7 @@ export default function HomePage() {
         </HomeEntrance>
 
         {restProjects.length > 0 && (
-          <section className="flex flex-col gap-16 pb-24 sm:gap-24">
+          <section className="flex flex-col gap-16 pb-before-footer sm:gap-24">
             {restProjects.map((project) => (
               <Grid key={project.slug}>
                 <ProjectCard project={project} />

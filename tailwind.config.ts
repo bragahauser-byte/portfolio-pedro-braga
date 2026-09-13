@@ -54,6 +54,12 @@ const config: Config = {
         "header-to-content": "164px", // header → hero text (Home) / header → bio (Sobre mim)
         "hero-to-image": "132px", // hero text → first project image (Home)
         "section-spacing": "132px", // vertical rhythm between blocks on project pages (Figma)
+        // Minimum distance between the last piece of page content and the
+        // footer, on every page — one token so it can't drift per-page.
+        "before-footer": "232px",
+        // Gap between Email/LinkedIn/Instagram in the footer — deliberately
+        // its own value, distinct from the header's nav gap (gap-16/64px).
+        "footer-gap": "112px",
       },
       maxWidth: {
         site: "1920px",

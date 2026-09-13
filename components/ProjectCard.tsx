@@ -15,12 +15,54 @@ const SCROLL_REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
 const IMAGE_HOVER =
   "transition-transform duration-300 ease-out group-hover:scale-[1.02] group-focus-visible:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none";
 
+// Same editorial hover treatment as the FMU link in HeroText: no color
+// change (keeps whatever text color it's given), just an underline that
+// eases in on hover/focus instead of appearing "dry".
+const CAPTION_LINK =
+  "cursor-pointer focus-ring underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] duration-150 ease-out hover:decoration-current";
+
 /**
- * The whole card — image and caption — is one link to the project page.
- * `priority` (the first card on Home) renders as plain markup — its
- * fade-in is handled by the parent <EntranceItem> as part of the Home
- * entrance stagger, so it doesn't animate itself (that would double up).
- * Every other card reveals on scroll via `whileInView`, unchanged.
+ * Image and caption for a project card. Split out so both the
+ * "whole-card-is-one-link" layout and the "author is a separate external
+ * link" layout can share the exact same image treatment.
+ */
+function CardImage({ project, priority }: { project: Project; priority: boolean }) {
+  const image = <ProjectImage project={project} priority={priority} className={IMAGE_HOVER} />;
+  const className = "relative aspect-[16/10] w-full overflow-hidden bg-[#8D8D8D]";
+
+  if (priority) {
+    // No self-entrance animation — priority cards are staggered in by the
+    // parent <EntranceItem> as part of the Home load-in, so animating here
+    // too would double up.
+    return <div className={className}>{image}</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: SCROLL_REVEAL_EASE }}
+      className={className}
+    >
+      {image}
+    </motion.div>
+  );
+}
+
+/**
+ * `priority` (the first card on Home) skips scroll-reveal animation on
+ * itself (handled by the Home entrance stagger instead) — `CardImage`
+ * above takes care of that distinction. Every other card reveals on
+ * scroll via `whileInView`, unchanged.
+ *
+ * When the project has `cardAuthorHref` (an outside office/collaborator
+ * with their own site — e.g. Nathalia Trota Arquitetura), the author name
+ * can't sit inside the same <a> as the rest of the card (nesting <a>
+ * inside <a> is invalid HTML) — so it renders as its own external link,
+ * a sibling of the internal <Link> that still covers the image + project
+ * name. Without `cardAuthorHref` (Pedro himself / a TFG), the whole card
+ * stays a single internal link, unchanged.
  */
 export function ProjectCard({
   project,
@@ -32,21 +74,26 @@ export function ProjectCard({
   const href = `/projetos/${project.slug}`;
   const ariaLabel = `Ver projeto: ${project.title}`;
 
-  if (priority) {
+  if (project.cardAuthorHref) {
     return (
-      <Link
-        href={href}
-        aria-label={ariaLabel}
-        className="group col-span-2 block cursor-pointer focus-ring sm:col-span-6"
-      >
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#8D8D8D]">
-          <ProjectImage project={project} priority className={IMAGE_HOVER} />
-        </div>
+      <div className="col-span-2 sm:col-span-6">
+        <Link href={href} aria-label={ariaLabel} className="group block cursor-pointer focus-ring">
+          <CardImage project={project} priority={priority} />
+        </Link>
         <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <span className="text-caption text-ink">{project.cardAuthor}</span>
-          <span className="text-caption text-muted">{project.cardLabel}</span>
+          <a
+            href={project.cardAuthorHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-caption text-ink ${CAPTION_LINK}`}
+          >
+            {project.cardAuthor}
+          </a>
+          <Link href={href} className={`text-caption text-muted ${CAPTION_LINK}`}>
+            {project.cardLabel}
+          </Link>
         </div>
-      </Link>
+      </div>
     );
   }
 
@@ -56,25 +103,11 @@ export function ProjectCard({
       aria-label={ariaLabel}
       className="group col-span-2 block cursor-pointer focus-ring sm:col-span-6"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.7, ease: SCROLL_REVEAL_EASE }}
-        className="relative aspect-[16/10] w-full overflow-hidden bg-[#8D8D8D]"
-      >
-        <ProjectImage project={project} className={IMAGE_HOVER} />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: SCROLL_REVEAL_EASE }}
-        className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1"
-      >
+      <CardImage project={project} priority={priority} />
+      <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
         <span className="text-caption text-ink">{project.cardAuthor}</span>
         <span className="text-caption text-muted">{project.cardLabel}</span>
-      </motion.div>
+      </div>
     </Link>
   );
 }

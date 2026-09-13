@@ -36,6 +36,14 @@ export type Project = {
   heroImage: string;
   /** Left side of the Home card (office/author) */
   cardAuthor: string;
+  /**
+   * When the author is an outside office/collaborator with their own site,
+   * `cardAuthor` becomes its own external link (new tab) instead of part
+   * of the card's internal link to /projetos/[slug] — e.g. a partner
+   * studio. Leave unset when the author is Pedro himself / a TFG, so the
+   * name stays plain text inside the card's single internal link.
+   */
+  cardAuthorHref?: string;
   /** Right side of the Home card, gray (project name [+ year]) */
   cardLabel: string;
   /** Editorial text blocks alternating left/right down the page */
@@ -147,6 +155,7 @@ export const projects: Project[] = [
     shortText: "Reforma residencial em Borda da Mata, MG, com cozinha, estar e lazer integrados.",
     heroImage: "/images/projects/area-gourmet-gj/varanda-gourmet-noturna.jpg",
     cardAuthor: "Nathalia Trota Arquitetura",
+    cardAuthorHref: "https://www.nathaliatrottaarquiteta.com.br/",
     cardLabel: "Área Gourmet G&J — 2026",
     sections: [
       {
