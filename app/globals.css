@@ -17,8 +17,58 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  /* #636363 is 6.0:1 on white (WCAG AA needs 4.5:1) — fine here. */
+  --color-muted: #636363;
+  --color-focus: #000000;
+}
+
+/* Scope for dark-background screens (Sobre mim, and any future dark
+   section) — applied once on the page's root element. #636363 on
+   #0C0C0C is only ~3.3:1, so the same `text-muted` class needs a
+   lighter shade here to stay WCAG AA; #8A8A8A clears it at ~5.7:1. */
+.theme-dark {
+  --color-muted: #8a8a8a;
+  --color-focus: #ffffff;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Keyboard-focus indicator, sitewide. :focus-visible (not :focus) so it
+     shows for keyboard/AT navigation but not on mouse clicks — and it's
+     never suppressed without a visible replacement. Color follows
+     --color-focus, which flips with .theme-dark like --color-muted. */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Text links (header nav, footer): muted → ink/paper on hover *and*
+     keyboard focus, fast enough to feel immediate but not abrupt. */
+  .link-hover {
+    color: var(--color-muted);
+    transition: color 150ms ease-out;
+  }
+  .link-hover:hover,
+  .link-hover:focus-visible {
+    color: var(--color-focus);
+  }
+
+  /* Guarantees a >=44x44px hit area on touch screens without changing
+     the visible text size — extra hit area comes from padding, which
+     also nudges layout, so it's opt-in per element rather than global. */
+  @media (max-width: 639px) {
+    .tap-target {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
   }
 }

@@ -16,7 +16,11 @@ const config: Config = {
         // Base
         ink: "#000000", // primary text on light backgrounds
         paper: "#FFFFFF", // Home background / text on dark backgrounds
-        muted: "#636363", // secondary text, disabled links, footer text (both themes)
+        // Reads via a CSS var (globals.css) so the SAME class stays WCAG AA
+        // compliant on both backgrounds: #636363 on white is 6.0:1, but only
+        // ~3.3:1 on #0C0C0C (needs 4.5:1) — the .theme-dark scope swaps it
+        // for a lighter #8A8A8A (5.67:1) instead of introducing a second class.
+        muted: "var(--color-muted)",
         night: "#0C0C0C", // Sobre mim background
       },
       fontFamily: {
@@ -29,6 +33,10 @@ const config: Config = {
         "name-xl": ["96px", { lineHeight: "116px", letterSpacing: "-0.05em" }],
         bio: ["32px", { lineHeight: "39px" }],
         caption: ["20px", { lineHeight: "24px" }],
+        // Project pages (Figma "Tela projeto")
+        "section-title": ["32px", { lineHeight: "39px" }],
+        "stat-number": ["112px", { lineHeight: "136px", letterSpacing: "-0.05em" }],
+        "stat-unit": ["48px", { lineHeight: "58px", letterSpacing: "-0.05em" }],
       },
       spacing: {
         "grid-margin": "80px",
@@ -40,6 +48,7 @@ const config: Config = {
         "header-top": "40px", // header distance from the very top of the page
         "header-to-content": "164px", // header → hero text (Home) / header → bio (Sobre mim)
         "hero-to-image": "132px", // hero text → first project image (Home)
+        "section-spacing": "132px", // vertical rhythm between blocks on project pages (Figma)
       },
       maxWidth: {
         site: "1920px",

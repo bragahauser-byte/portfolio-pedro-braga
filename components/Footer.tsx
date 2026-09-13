@@ -18,7 +18,7 @@ export function Footer() {
               href={item.href}
               target={item.href.startsWith("http") ? "_blank" : undefined}
               rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="text-muted transition-opacity duration-300 hover:opacity-70"
+              className="link-hover focus-ring tap-target cursor-pointer"
             >
               {item.label}
             </a>

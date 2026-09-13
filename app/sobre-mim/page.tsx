@@ -23,7 +23,7 @@ const BIO_PARAGRAPHS = [
 
 export default function SobreMimPage() {
   return (
-    <div className="min-h-screen bg-night text-paper">
+    <div className="theme-dark min-h-screen bg-night text-paper">
       <Header theme="dark" />
 
       <main>

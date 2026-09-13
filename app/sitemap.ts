@@ -1,12 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
+import { projects } from "@/data/projects";
 
-// NOTE: intentionally lists only routes that actually resolve today.
-// Once /projetos/[slug]/page.tsx exists, map over `projects` from
-// data/projects.ts here to add each project URL — don't list them
-// before the pages exist (that would submit 404s to Google).
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
       lastModified: new Date(),
@@ -20,4 +17,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
   ];
+
+  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${SITE_URL}/projetos/${project.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...projectRoutes];
 }

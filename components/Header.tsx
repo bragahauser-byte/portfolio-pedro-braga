@@ -20,10 +20,12 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
   const isHome = pathname === "/";
   const isSobre = pathname === "/sobre-mim";
 
-  // "Active" color follows the current theme; inactive links are always
-  // the shared secondary gray, on both light and dark backgrounds.
+  // The active link is already at max contrast — no hover state needed.
+  // Inactive links use `.link-hover` (muted → ink/paper on hover *and*
+  // keyboard focus). Every link gets `.focus-ring` for the visible
+  // :focus-visible outline and `.tap-target` for a >=44px mobile hit area.
   const activeColor = theme === "dark" ? "text-paper" : "text-ink";
-  const inactiveColor = "text-muted";
+  const linkBase = "text-[18px] leading-[22px] sm:text-header-name cursor-pointer focus-ring tap-target";
 
   function handleContatoClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
@@ -42,26 +44,18 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
         <div className="col-span-2 flex items-center justify-between sm:col-span-6">
           <Link
             href="/"
-            className={`text-[18px] leading-[22px] transition-colors duration-300 sm:text-header-name ${
-              isHome ? activeColor : inactiveColor
-            }`}
+            className={`${linkBase} ${isHome ? activeColor : "link-hover"}`}
           >
             Pedro Braga
           </Link>
           <div className="flex items-center gap-6 sm:gap-16">
             <Link
               href="/sobre-mim"
-              className={`text-[18px] leading-[22px] transition-colors duration-300 sm:text-header-name ${
-                isSobre ? activeColor : inactiveColor
-              }`}
+              className={`${linkBase} ${isSobre ? activeColor : "link-hover"}`}
             >
               Sobre mim
             </Link>
-            <a
-              href="#contato"
-              onClick={handleContatoClick}
-              className="text-[18px] leading-[22px] text-muted transition-colors duration-300 sm:text-header-name"
-            >
+            <a href="#contato" onClick={handleContatoClick} className={`${linkBase} link-hover`}>
               Contato
             </a>
           </div>
