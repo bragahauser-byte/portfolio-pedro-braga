@@ -203,8 +203,7 @@ export const projects: Project[] = [
     // own but reads right after it) → Coberturas(6 — last planta, shown
     // here rather than in strict sheet-number order so it lands right
     // before the cortes start) → Corte A(8) → Corte B(9) → Elevação
-    // Norte(10) → Sul(11 — missing from the source files; TODO: add once
-    // provided) → Leste(12) → Oeste(13).
+    // Norte(10) → Sul(11) → Leste(12) → Oeste(13).
     gallery: [
       "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
       "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
@@ -217,6 +216,7 @@ export const projects: Project[] = [
       "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
       "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
       "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+      "/images/projects/eixo-oratorio/elevacao-sul.png",
       "/images/projects/eixo-oratorio/elevacao-leste.jpg",
       "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
     ],
