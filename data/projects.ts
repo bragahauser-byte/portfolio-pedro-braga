@@ -99,7 +99,7 @@ export const projects: Project[] = [
     subtitle:
       "Um eixo de convivência que conecta metrô, comércio e moradia a partir de uma praça central.",
     shortText: "Trabalho Final de Graduação — Parque São Lucas, zona leste de São Paulo, SP.",
-    heroImage: "/images/projects/eixo-oratorio/fachada-rua-diurna.jpg",
+    heroImage: "/images/projects/eixo-oratorio/fachada-capa-conjunto-aereo.jpg",
     cardAuthor: "Trabalho Final de Graduação",
     cardLabel: "Multifuncional Eixo Oratório",
     sections: [
@@ -139,12 +139,16 @@ export const projects: Project[] = [
       {
         title: "A fachada norte",
         body: "Vãos amplos garantem ventilação cruzada, luz natural e visibilidade entre o interior e o espaço público. O setor recebe ainda eventos temporários, como feiras e atividades comunitárias, reforçando o caráter aberto do projeto.",
+        // Era um "díptico" com praca-acesso-paisagismo.jpg + fachadas-comparativo.jpg,
+        // mas fachadas-comparativo.jpg já É um comparativo de 2 fachadas
+        // composto em um único arquivo (confirmado no arquivo original) —
+        // colocá-lo dentro de uma metade de díptico espremia as duas fotos
+        // internas sem seguir o grid/gutter do site. Correto é full-bleed
+        // com essa imagem sozinha; praca-acesso-paisagismo.jpg foi realocada
+        // para "O contexto urbano" abaixo.
         images: {
-          variant: "diptico-simetrico",
-          photos: [
-            "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
-            "/images/projects/eixo-oratorio/fachadas-comparativo.jpg",
-          ],
+          variant: "full-bleed",
+          photos: ["/images/projects/eixo-oratorio/fachadas-comparativo.jpg"],
         },
       },
       {
@@ -159,8 +163,11 @@ export const projects: Project[] = [
         title: "O contexto urbano",
         body: "Inserido em um entorno predominantemente residencial e com baixa diversidade comercial, o projeto propõe maior ênfase em comércio e serviços, consolidando-se como um polo de atividades para a região.",
         images: {
-          variant: "full-bleed",
-          photos: ["/images/projects/eixo-oratorio/cobertura-vista-aerea.jpg"],
+          variant: "diptico-simetrico",
+          photos: [
+            "/images/projects/eixo-oratorio/cobertura-vista-aerea.jpg",
+            "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
+          ],
         },
       },
     ],
@@ -189,14 +196,15 @@ export const projects: Project[] = [
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
     // Every photo above is already placed via `sections[].images` — this
     // array is just the technical drawings (plantas/cortes/elevações),
-    // trailing after the stats/specs blocks. Ordered by the sheet number
-    // printed on each prancha itself (checked against the actual files,
-    // not the filenames): Térreo(1) → Subsolo(2) → 1º Pav.(3) →
-    // 2º Pav.(4) → Pavimento Tipo(5) → Pavimento Tipo Resid.(7, its
-    // typology legend has no number of its own but reads right after it)
-    // → Corte A(8) → Corte B(9) → Elevação Norte(10) → Leste(12) →
-    // Oeste(13) — the standard low-to-high, plans-then-cortes-then-
-    // elevações reading order for an architecture drawing set.
+    // trailing after the stats/specs blocks. Ordered by display sequence
+    // (checked against the actual files, not the filenames): Térreo(1) →
+    // Subsolo(2) → 1º Pav.(3) → 2º Pav.(4) → Pavimento Tipo(5) →
+    // Pavimento Tipo Resid.(7, its typology legend has no number of its
+    // own but reads right after it) → Coberturas(6 — last planta, shown
+    // here rather than in strict sheet-number order so it lands right
+    // before the cortes start) → Corte A(8) → Corte B(9) → Elevação
+    // Norte(10) → Sul(11 — missing from the source files; TODO: add once
+    // provided) → Leste(12) → Oeste(13).
     gallery: [
       "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
       "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
@@ -205,6 +213,7 @@ export const projects: Project[] = [
       "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
       "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
       "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
+      "/images/projects/eixo-oratorio/planta-coberturas.jpg",
       "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
       "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
       "/images/projects/eixo-oratorio/elevacao-norte.jpg",
@@ -263,11 +272,16 @@ export const projects: Project[] = [
     },
     // Every photo above is already placed via `sections[].images` — this
     // array is just the technical drawings, trailing after stats/specs.
+    // Corte A was missing entirely (only Corte B had been added) — added
+    // here, before Corte B, per the site-wide rule that Corte A always
+    // precedes Corte B. planta-coberturas.jpg used to be here too, but it
+    // actually belongs to Multifuncional Eixo Oratório (wrong project) —
+    // moved there.
     gallery: [
       "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
       "/images/projects/area-gourmet-gj/planta-baixa.jpg",
+      "/images/projects/area-gourmet-gj/corte-a-tecnico.png",
       "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",
-      "/images/projects/area-gourmet-gj/planta-coberturas.jpg",
     ],
     order: 2,
   },

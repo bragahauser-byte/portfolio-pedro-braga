@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer id="contato" className="w-full py-nav-padding-y">
       <Grid>
-        <div className="col-span-2 flex flex-wrap items-center gap-x-8 gap-y-3 sm:col-span-6 sm:gap-x-footer-gap">
+        <div className="col-span-2 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:col-span-6 sm:justify-start sm:gap-x-footer-gap">
           {CONTACT_LINKS.map((item) => (
             <a
               key={item.label}

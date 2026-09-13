@@ -38,6 +38,11 @@ next-env.d.ts
 # raw source images (unprocessed WhatsApp exports) — curated copies
 # already live in /public/images/projects
 /imagens
+/imagens projetos Multifuncional Eixo Oratório
+/imagens projetos Área Gourmet G&J
 
 # layout reference mockups (design gabarito, not site content)
 /referencias-visuais
+
+# bug-report screenshots (not site content)
+/erros para corrigir

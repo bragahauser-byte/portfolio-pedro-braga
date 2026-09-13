@@ -24,10 +24,126 @@ export function LightboxImage({
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const reducedMotion = useReducedMotion();
   const titleId = useId();
+
+  // Zoom/pan interaction state — kept in refs (not React state) since it
+  // updates on every pointermove and shouldn't trigger re-renders itself.
+  const dragRef = useRef<{ active: boolean; startX: number; startY: number; originX: number; originY: number }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0,
+  });
+  const pinchRef = useRef<{ active: boolean; startDist: number; startScale: number }>({
+    active: false,
+    startDist: 0,
+    startScale: 1,
+  });
+
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 4;
+  const DOUBLE_TAP_SCALE = 2.5;
+
+  function clampScale(value: number) {
+    return Math.min(MAX_SCALE, Math.max(MIN_SCALE, value));
+  }
+
+  function resetZoom() {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
+  }
+
+  function handleWheel(e: React.WheelEvent<HTMLImageElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setScale((prev) => {
+      const next = clampScale(prev - e.deltaY * 0.0015 * prev);
+      if (next === 1) setTranslate({ x: 0, y: 0 });
+      return next;
+    });
+  }
+
+  function handleDoubleClick(e: React.MouseEvent<HTMLImageElement>) {
+    e.stopPropagation();
+    setScale((prev) => {
+      if (prev > 1) {
+        setTranslate({ x: 0, y: 0 });
+        return 1;
+      }
+      return DOUBLE_TAP_SCALE;
+    });
+  }
+
+  function handleMouseDown(e: React.MouseEvent<HTMLImageElement>) {
+    if (scale <= 1) return;
+    e.preventDefault();
+    dragRef.current = {
+      active: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: translate.x,
+      originY: translate.y,
+    };
+  }
+
+  function handleMouseMove(e: React.MouseEvent<HTMLImageElement>) {
+    if (!dragRef.current.active) return;
+    setTranslate({
+      x: dragRef.current.originX + (e.clientX - dragRef.current.startX),
+      y: dragRef.current.originY + (e.clientY - dragRef.current.startY),
+    });
+  }
+
+  function stopDrag() {
+    dragRef.current.active = false;
+  }
+
+  function touchDistance(touches: React.TouchList) {
+    const [a, b] = [touches[0], touches[1]];
+    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  }
+
+  function handleTouchStart(e: React.TouchEvent<HTMLImageElement>) {
+    if (e.touches.length === 2) {
+      pinchRef.current = { active: true, startDist: touchDistance(e.touches), startScale: scale };
+      dragRef.current.active = false;
+    } else if (e.touches.length === 1 && scale > 1) {
+      dragRef.current = {
+        active: true,
+        startX: e.touches[0].clientX,
+        startY: e.touches[0].clientY,
+        originX: translate.x,
+        originY: translate.y,
+      };
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent<HTMLImageElement>) {
+    if (pinchRef.current.active && e.touches.length === 2) {
+      e.preventDefault();
+      const ratio = touchDistance(e.touches) / pinchRef.current.startDist;
+      const next = clampScale(pinchRef.current.startScale * ratio);
+      setScale(next);
+      if (next === 1) setTranslate({ x: 0, y: 0 });
+    } else if (dragRef.current.active && e.touches.length === 1) {
+      e.preventDefault();
+      setTranslate({
+        x: dragRef.current.originX + (e.touches[0].clientX - dragRef.current.startX),
+        y: dragRef.current.originY + (e.touches[0].clientY - dragRef.current.startY),
+      });
+    }
+  }
+
+  function handleTouchEnd(e: React.TouchEvent<HTMLImageElement>) {
+    if (e.touches.length < 2) pinchRef.current.active = false;
+    if (e.touches.length === 0) dragRef.current.active = false;
+  }
 
   useEffect(() => setMounted(true), []);
 
@@ -72,6 +188,7 @@ export function LightboxImage({
 
   function close() {
     setOpen(false);
+    resetZoom();
     triggerRef.current?.focus();
   }
 
@@ -119,16 +236,50 @@ export function LightboxImage({
                   {alt}
                 </span>
 
-                <motion.img
-                  src={withBasePath(src)}
-                  alt={alt}
+                <motion.div
                   initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
                   transition={{ duration: fadeDuration, ease: "easeOut" }}
                   onClick={(e) => e.stopPropagation()}
-                  className="relative max-h-[90vh] max-w-[90vw] cursor-zoom-out object-contain"
-                />
+                  className="relative max-h-[90vh] max-w-[90vw] overflow-hidden"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={withBasePath(src)}
+                    alt={alt}
+                    onWheel={handleWheel}
+                    onDoubleClick={handleDoubleClick}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={stopDrag}
+                    onMouseLeave={stopDrag}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    style={{
+                      transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+                      transition: dragRef.current.active || pinchRef.current.active ? "none" : "transform 150ms ease-out",
+                      touchAction: scale > 1 ? "none" : "pinch-zoom",
+                    }}
+                    className={`block max-h-[90vh] max-w-[90vw] select-none object-contain ${
+                      scale > 1 ? "cursor-grab active:cursor-grabbing" : "cursor-zoom-in"
+                    }`}
+                  />
+                </motion.div>
+
+                {scale > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      resetZoom();
+                    }}
+                    className="focus-ring fixed left-6 top-6 z-[110] flex h-11 items-center justify-center rounded-full bg-white/10 px-4 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                  >
+                    Redefinir zoom
+                  </button>
+                )}
 
                 <button
                   type="button"
