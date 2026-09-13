@@ -35,6 +35,11 @@ const config: Config = {
         "grid-margin-sm": "24px",
         gutter: "20px",
         "gutter-sm": "16px",
+        // Vertical rhythm — applied as real padding-top in document flow
+        // (never as a flex/grid gap, so these stay exact and predictable).
+        "header-top": "40px", // header distance from the very top of the page
+        "header-to-content": "164px", // header → hero text (Home) / header → bio (Sobre mim)
+        "hero-to-image": "132px", // hero text → first project image (Home)
       },
       maxWidth: {
         site: "1920px",

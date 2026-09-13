@@ -27,17 +27,16 @@ export default function SobreMimPage() {
       <Header theme="dark" />
 
       <main>
-        <section className="pb-12 pt-8 sm:pb-20">
-          <Grid>
-            <h1 className="col-span-2 text-[64px] leading-[70px] tracking-[-0.03em] text-paper sm:col-span-6 sm:text-name-xl">
-              Pedro Braga
-            </h1>
-          </Grid>
-        </section>
-
-        <section className="pb-24">
+        {/* Same 164px header→content distance used on Home, for vertical consistency between screens. */}
+        <section className="pb-24 pt-header-to-content">
           <Grid>
             <BioSection paragraphs={BIO_PARAGRAPHS} />
+            {/* Full name, small and discreet — SEO benefit (readable full name on
+                the page) without repeating it on every route via the Footer. */}
+            <p className="col-span-2 mt-6 text-sm font-normal text-muted sm:col-span-5">
+              Pedro Henrique Braga da Silva — Arquiteto e Urbanista, CAU em
+              processo de registro.
+            </p>
           </Grid>
         </section>
       </main>

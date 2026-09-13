@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Grid } from "@/components/Grid";
 import { ProjectCard } from "@/components/ProjectCard";
 import { HeroText } from "@/components/HeroText";
+import { HomeEntrance, EntranceItem } from "@/components/HomeEntrance";
 import { projects } from "@/data/projects";
 import { buildMetadata } from "@/lib/seo";
 
@@ -13,27 +14,51 @@ export function generateMetadata(): Metadata {
 
 export default function HomePage() {
   const sortedProjects = [...projects].sort((a, b) => a.order - b.order);
+  const [firstProject, ...restProjects] = sortedProjects;
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      <Header theme="light" />
-
       <main>
-        <section className="pb-16 pt-4 sm:pb-24">
-          <Grid>
-            <div className="col-span-2 sm:col-span-4">
-              <HeroText />
-            </div>
-          </Grid>
-        </section>
+        {/*
+          Header → hero → first image: exact vertical rhythm via real
+          padding-top in document flow (no flex/grid gap involved, so
+          nothing "swallows" these values) + the Home entrance stagger.
+        */}
+        <HomeEntrance>
+          <EntranceItem>
+            <Header theme="light" />
+          </EntranceItem>
 
-        <section className="flex flex-col gap-16 pb-24 sm:gap-24">
-          {sortedProjects.map((project, index) => (
-            <Grid key={project.slug}>
-              <ProjectCard project={project} priority={index === 0} />
-            </Grid>
-          ))}
-        </section>
+          <EntranceItem>
+            <div className="pt-header-to-content">
+              <Grid>
+                <div className="col-span-2 sm:col-span-4">
+                  <HeroText />
+                </div>
+              </Grid>
+            </div>
+          </EntranceItem>
+
+          {firstProject && (
+            <EntranceItem>
+              <div className="pb-24 pt-hero-to-image">
+                <Grid>
+                  <ProjectCard project={firstProject} priority />
+                </Grid>
+              </div>
+            </EntranceItem>
+          )}
+        </HomeEntrance>
+
+        {restProjects.length > 0 && (
+          <section className="flex flex-col gap-16 pb-24 sm:gap-24">
+            {restProjects.map((project) => (
+              <Grid key={project.slug}>
+                <ProjectCard project={project} />
+              </Grid>
+            ))}
+          </section>
+        )}
       </main>
 
       <Footer />

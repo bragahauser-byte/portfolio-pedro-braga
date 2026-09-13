@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { Grid } from "./Grid";
 
 type Theme = "light" | "dark";
 
+/**
+ * Static by design — no self-contained entrance animation. On Home it's
+ * animated externally as the first step of <HomeEntrance>; on every other
+ * page, entrance is handled by the whole-screen Shared Axis page
+ * transition in PageTransition.tsx. Animating it a second time here would
+ * double up and fight those.
+ */
 export function Header({ theme = "light" }: { theme?: Theme }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -31,12 +37,7 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
   }
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="sticky top-0 z-50 w-full py-8"
-    >
+    <header className="sticky top-0 z-50 w-full pb-0 pt-header-top">
       <Grid as="nav">
         <div className="col-span-2 flex items-center justify-between sm:col-span-6">
           <Link
@@ -66,6 +67,6 @@ export function Header({ theme = "light" }: { theme?: Theme }) {
           </div>
         </div>
       </Grid>
-    </motion.header>
+    </header>
   );
 }

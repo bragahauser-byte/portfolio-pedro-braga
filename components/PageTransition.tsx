@@ -1,26 +1,36 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
+import { pageTransitionVariants } from "@/lib/motion";
 
 /**
- * Wraps every route's content. New screens slide in from the right while
- * the previous one fades/slides out to the left. Driven purely by
- * usePathname(), so any new route (including future /projetos/[slug]
- * pages) gets this transition automatically — nothing to reimplement.
+ * Material Design 3 "Shared Axis X" page transition — the recommended
+ * pattern for navigating between hierarchy levels (Home → Sobre mim, and
+ * any future /projetos/[slug]). Entering and exiting screens use a short
+ * offset (not a full-screen slide) with asymmetric easing: decelerate in,
+ * accelerate out. Driven purely by usePathname(), so any new route gets
+ * this automatically — nothing to reimplement per page.
+ *
+ * mode="wait" avoids overlapping DOM (two full pages mounted at once),
+ * which also sidesteps layout-collapse issues from stacking pages with
+ * differing heights. Switch to mode="popLayout" if this ever produces a
+ * visible blank-screen flash between pages.
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const reducedMotion = useReducedMotion();
+  const variants = pageTransitionVariants(reducedMotion);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        initial={{ x: "6%", opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: "-4%", opacity: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={variants}
       >
         {children}
       </motion.div>

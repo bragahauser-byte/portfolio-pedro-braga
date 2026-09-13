@@ -24,12 +24,6 @@ export function Footer() {
             </a>
           ))}
         </div>
-        <div className="col-span-2 mt-8 sm:col-span-6">
-          <p className="text-sm text-muted">
-            Pedro Henrique Braga da Silva — Arquiteto e Urbanista, CAU em
-            processo de registro.
-          </p>
-        </div>
       </Grid>
     </footer>
   );
