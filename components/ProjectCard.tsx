@@ -74,13 +74,22 @@ export function ProjectCard({
   const href = `/projetos/${project.slug}`;
   const ariaLabel = `Ver projeto: ${project.title}`;
 
+  // Mobile stacks caption ABOVE the image (author → project/year → image,
+  // matching the reference mobile pattern); desktop keeps image first,
+  // caption below. `order` (not DOM order) drives this so the reversal is
+  // pure CSS — the flex `gap-4` supplies the mobile spacing and hands off
+  // to the original `sm:mt-4` once desktop restores the normal order.
   if (project.cardAuthorHref) {
     return (
-      <div className="col-span-2 sm:col-span-6">
-        <Link href={href} aria-label={ariaLabel} className="group block cursor-pointer focus-ring">
+      <div className="col-span-2 flex flex-col gap-4 sm:col-span-6 sm:gap-0">
+        <Link
+          href={href}
+          aria-label={ariaLabel}
+          className="group order-2 block cursor-pointer focus-ring sm:order-1"
+        >
           <CardImage project={project} priority={priority} />
         </Link>
-        <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+        <div className="order-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
           <a
             href={project.cardAuthorHref}
             target="_blank"
@@ -101,10 +110,12 @@ export function ProjectCard({
     <Link
       href={href}
       aria-label={ariaLabel}
-      className="group col-span-2 block cursor-pointer focus-ring sm:col-span-6"
+      className="group col-span-2 flex flex-col gap-4 cursor-pointer focus-ring sm:col-span-6 sm:gap-0"
     >
-      <CardImage project={project} priority={priority} />
-      <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+      <div className="order-2 sm:order-1">
+        <CardImage project={project} priority={priority} />
+      </div>
+      <div className="order-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 sm:order-2 sm:mt-4">
         <span className="text-caption text-ink">{project.cardAuthor}</span>
         <span className="text-caption text-muted">{project.cardLabel}</span>
       </div>

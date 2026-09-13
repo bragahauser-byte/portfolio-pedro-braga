@@ -60,6 +60,11 @@ const config: Config = {
         // Gap between Email/LinkedIn/Instagram in the footer — deliberately
         // its own value, distinct from the header's nav gap (gap-16/64px).
         "footer-gap": "112px",
+        // Vertical gap between the two photos in the "assimetrica-aberta"
+        // project-gallery variant (Figma: 80-120px, picked the midpoint) —
+        // deliberately much larger than the standard 20px gutter, since the
+        // two photos must read as separate editorial moments, not a pair.
+        "asymmetric-gap": "96px",
       },
       maxWidth: {
         site: "1920px",

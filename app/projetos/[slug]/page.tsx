@@ -33,9 +33,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 // Groups consecutive photos into rows of up to 2 (a trailing odd photo
-// gets its own row) — this is what lets ProjectGalleryImage render either
-// a single full-width photo or a side-by-side pair with the grid's 20px
-// gutter, matching the reference PDFs' mix of single and paired images.
+// gets its own row) — used for the technical-drawing tail in `gallery`,
+// which always renders as plain symmetric pairs.
 function chunkIntoPairs<T>(items: T[]): T[][] {
   const chunks: T[][] = [];
   for (let i = 0; i < items.length; i += 2) {
@@ -50,15 +49,9 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
-  const galleryChunks = chunkIntoPairs(project.gallery);
-  // One chunk per section, by position — NOT `% galleryChunks.length`,
-  // which silently dropped every chunk past `sections.length` whenever a
-  // project had more image pairs than text sections (exactly what made
-  // photos that were added to `gallery` never actually render). Any chunk
-  // left over after the sections run out is appended afterward instead,
-  // so every image in `gallery` ends up on the page exactly once.
-  const sectionChunks = galleryChunks.slice(0, project.sections.length);
-  const extraChunks = galleryChunks.slice(project.sections.length);
+  // Trailing photos (plantas/cortes/elevações) not tied to any section —
+  // always plain symmetric pairs, closing out the page after stats/specs.
+  const extraChunks = chunkIntoPairs(project.gallery);
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -68,14 +61,15 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <ProjectHero project={project} />
 
         {project.sections.map((section, index) => {
-          const chunk = sectionChunks[index] ?? [];
+          const photos = section.images?.photos ?? [];
           return (
             <div key={section.title}>
               <ProjectSection section={section} align={index % 2 === 0 ? "left" : "right"} />
               <ProjectGalleryImage
-                images={chunk.map((src, photoIndex) => ({
+                variant={section.images?.variant}
+                images={photos.map((src, photoIndex) => ({
                   src,
-                  alt: `${project.title} — ${section.title}${chunk.length > 1 ? ` (${photoIndex + 1}/${chunk.length})` : ""}`,
+                  alt: `${project.title} — ${section.title}${photos.length > 1 ? ` (${photoIndex + 1}/${photos.length})` : ""}`,
                 }))}
               />
             </div>

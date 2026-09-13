@@ -8,9 +8,28 @@
 // 3. /app/projetos/[slug]/page.tsx picks it up automatically via
 //    generateStaticParams() — nothing else to wire up.
 
+/**
+ * How a section's photo(s) should be laid out — picked explicitly per
+ * section instead of one generic gallery treating every image the same:
+ * - "full-bleed": one photo, full content width.
+ * - "diptico-simetrico": two photos side by side, equal width, standard gutter.
+ * - "assimetrica-aberta": two photos as two separate editorial moments —
+ *   the first medium-sized and left-anchored, the second lower and
+ *   right-anchored, with generous whitespace between them (never a paired
+ *   "gallery" look). Collapses to stacked full-width photos on mobile.
+ */
+export type SectionImageVariant = "full-bleed" | "diptico-simetrico" | "assimetrica-aberta";
+
+export type SectionImages = {
+  variant: SectionImageVariant;
+  photos: string[];
+};
+
 export type ProjectSection = {
   title: string;
   body: string;
+  /** Photo(s) shown right after this section's text, with an explicit layout. */
+  images?: SectionImages;
 };
 
 export type TechSpec = {
@@ -74,26 +93,62 @@ export const projects: Project[] = [
       {
         title: "O conceito",
         body: "O Eixo Oratório nasce de uma praça central que articula o fluxo de pedestres entre as avenidas Oratório e Anhaia Mello. O projeto amplia os espaços coletivos do bairro, integrando comércio, serviços e moradia em um só percurso urbano.",
+        images: {
+          variant: "diptico-simetrico",
+          photos: [
+            "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg",
+            "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg",
+          ],
+        },
       },
       {
         title: "A praça e o percurso",
         body: "A galeria vence o desnível entre as duas avenidas por meio de uma escadaria e rampa na fachada oeste, com bancos e árvores que transformam a circulação em uma praça verticalizada — acessível a moradores, trabalhadores e usuários da Estação Oratório.",
+        // Composição assimétrica aberta: a fachada (momento urbano) e a
+        // galeria interior (momento de percurso) como dois instantes
+        // separados, não um díptico colado — ver referencias-visuais/2.
+        images: {
+          variant: "assimetrica-aberta",
+          photos: [
+            "/images/projects/eixo-oratorio/fachada-rua-angulo-alternativo.jpg",
+            "/images/projects/eixo-oratorio/passagem-publica-terreo.jpg",
+          ],
+        },
       },
       {
         title: "O térreo comercial",
         body: "Catorze lojas de diferentes dimensões ocupam o térreo, entre barbearia, loja de roupas, minimercado e lanchonetes. Um bicicletário para 200 bicicletas dialoga com a ciclovia da Avenida Anhaia Mello, tornando a galeria também um ponto de parada para ciclistas.",
+        images: {
+          variant: "full-bleed",
+          photos: ["/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg"],
+        },
       },
       {
         title: "A fachada norte",
         body: "Vãos amplos garantem ventilação cruzada, luz natural e visibilidade entre o interior e o espaço público. O setor recebe ainda eventos temporários, como feiras e atividades comunitárias, reforçando o caráter aberto do projeto.",
+        images: {
+          variant: "diptico-simetrico",
+          photos: [
+            "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
+            "/images/projects/eixo-oratorio/fachadas-comparativo.jpg",
+          ],
+        },
       },
       {
         title: "Os usos do edifício",
         body: "Além do térreo comercial, o multifuncional reúne escritórios, auditório, espaços expositivos e ambientes multiuso. No primeiro pavimento, uma academia e uma livraria ancoram áreas flexíveis para exposições e apresentações artísticas.",
+        images: {
+          variant: "full-bleed",
+          photos: ["/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg"],
+        },
       },
       {
         title: "O contexto urbano",
         body: "Inserido em um entorno predominantemente residencial e com baixa diversidade comercial, o projeto propõe maior ênfase em comércio e serviços, consolidando-se como um polo de atividades para a região.",
+        images: {
+          variant: "full-bleed",
+          photos: ["/images/projects/eixo-oratorio/cobertura-vista-aerea.jpg"],
+        },
       },
     ],
     bigNumbers: [
@@ -118,31 +173,20 @@ export const projects: Project[] = [
       },
     ],
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
-    // Photos first (paired with the text sections above, in order), then
-    // technical drawings (plantas/cortes/elevações) trailing at the end —
-    // /app/projetos/[slug] pairs one gallery chunk per section and appends
-    // any leftover chunks afterward, so ordering here is what controls
-    // where each image ends up on the page.
+    // Every photo above is already placed via `sections[].images` — this
+    // array is just the technical drawings (plantas/cortes/elevações),
+    // trailing after the stats/specs blocks, paired up in reading order.
     gallery: [
-      "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg",
-      "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg",
-      "/images/projects/eixo-oratorio/galeria-expositiva-interior.jpg",
-      "/images/projects/eixo-oratorio/passagem-publica-terreo.jpg",
-      "/images/projects/eixo-oratorio/fachada-rua-angulo-alternativo.jpg",
-      "/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg",
-      "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
-      "/images/projects/eixo-oratorio/fachadas-comparativo.jpg",
-      "/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg",
       "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
       "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
+      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
+      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
       "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
       "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
       "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
       "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
       "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
-      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
-      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
-      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
       "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
       "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
     ],
@@ -161,10 +205,25 @@ export const projects: Project[] = [
       {
         title: "O conceito",
         body: "O projeto surgiu da proposta de transformar um quintal pouco utilizado em uma área gourmet voltada ao convívio entre amigos e familiares. A intervenção buscou criar um ambiente confortável e acolhedor, integrando cozinha, estar e lazer em um mesmo espaço, pensado para receber sem perder a sensação de casa.",
+        // Díptico simétrico clássico — confirmado contra referencias-visuais/1.
+        images: {
+          variant: "diptico-simetrico",
+          photos: [
+            "/images/projects/area-gourmet-gj/cozinha-sala-de-jogos.jpg",
+            "/images/projects/area-gourmet-gj/cozinha-ilha-detalhe.jpg",
+          ],
+        },
       },
       {
         title: "Os materiais",
         body: "A linguagem contemporânea incorpora referências industriais por meio das estruturas metálicas, esquadrias e elementos em preto, equilibradas pela presença da madeira, da vegetação e de uma iluminação predominantemente quente. O paisagismo participa dos ambientes e contribui para tornar o conjunto mais leve e convidativo — mais do que uma nova função para o quintal, um espaço de permanência.",
+        images: {
+          variant: "diptico-simetrico",
+          photos: [
+            "/images/projects/area-gourmet-gj/spa-pergolado-noturno.jpg",
+            "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg",
+          ],
+        },
       },
     ],
     bigNumbers: [
@@ -177,12 +236,9 @@ export const projects: Project[] = [
       body: "Responsável por todas as etapas do projeto, da concepção à escolha de materiais, buscando equilibrar linguagem industrial e acolhimento no mesmo espaço.",
     },
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
-    // Photos first (paired with the sections above), technical drawings trailing.
+    // Every photo above is already placed via `sections[].images` — this
+    // array is just the technical drawings, trailing after stats/specs.
     gallery: [
-      "/images/projects/area-gourmet-gj/cozinha-sala-de-jogos.jpg",
-      "/images/projects/area-gourmet-gj/cozinha-ilha-detalhe.jpg",
-      "/images/projects/area-gourmet-gj/spa-pergolado-noturno.jpg",
-      "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg",
       "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
       "/images/projects/area-gourmet-gj/planta-baixa.jpg",
       "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",

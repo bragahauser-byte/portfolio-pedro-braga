@@ -38,3 +38,6 @@ next-env.d.ts
 # raw source images (unprocessed WhatsApp exports) — curated copies
 # already live in /public/images/projects
 /imagens
+
+# layout reference mockups (design gabarito, not site content)
+/referencias-visuais
