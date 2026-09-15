@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 
-// TODO: swap for the real production domain once it's registered/deployed
-// (and drop the /portfolio-pedro-braga subpath + basePath in next.config.mjs
-// together with it). For now this points at the actual GitHub Pages URL so
-// canonical/OG/sitemap tags aren't self-contradictory on the live site.
-export const SITE_URL = "https://bragahauser-byte.github.io/portfolio-pedro-braga";
+// Production origin. Served from the root of this custom domain via GitHub
+// Pages (see /public/CNAME), so it carries no path component — canonical/OG/
+// sitemap URLs are just this plus the route.
+export const SITE_URL = "https://phbraga.com.br";
 
 export const SITE_NAME = "Pedro Braga";
 
@@ -29,11 +28,6 @@ export function buildMetadata({
 } = {}): Metadata {
   const resolvedTitle = title ?? DEFAULT_TITLE;
   const resolvedDescription = description ?? DEFAULT_DESCRIPTION;
-  // Plain concatenation, not `new URL(path, SITE_URL)`: since SITE_URL
-  // itself has a path (the GitHub Pages /portfolio-pedro-braga subpath),
-  // the URL constructor would replace that path entirely with `path`
-  // instead of appending to it (absolute paths override a base's path
-  // per the URL spec), silently dropping the subpath.
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
 
   return {
