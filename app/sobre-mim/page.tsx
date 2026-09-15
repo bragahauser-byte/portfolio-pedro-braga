@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
   return buildMetadata({
     title: "Sobre mim — Pedro Braga | Arquiteto e Urbanista",
     description:
-      "Conheça Pedro Henrique Braga da Silva (Pedro Braga), arquiteto e urbanista de São Paulo — sua trajetória, interesses e processo criativo.",
+      "Conheça Pedro Braga, arquiteto e urbanista paulistano — sua trajetória, o interesse por design de interiores e o processo criativo no desenho à mão livre.",
     path: "/sobre-mim",
   });
 }
@@ -30,6 +30,11 @@ export default function SobreMimPage() {
         {/* Same 164px header→content distance used on Home, for vertical consistency between screens. */}
         <section className="pb-before-footer pt-header-to-content">
           <Grid>
+            {/* Page's single <h1> — was missing entirely before (the bio
+                paragraphs had no heading above them at all). */}
+            <h1 className="col-span-2 mb-8 text-[24px] leading-[31px] text-paper sm:col-span-5 sm:mb-12 sm:text-hero">
+              Sobre mim
+            </h1>
             <BioSection paragraphs={BIO_PARAGRAPHS} />
           </Grid>
         </section>

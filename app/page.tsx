@@ -7,7 +7,7 @@ import { HeroText } from "@/components/HeroText";
 import { HomeEntrance, EntranceItem } from "@/components/HomeEntrance";
 import { ScrollFadeIn } from "@/components/ScrollFadeIn";
 import { projects } from "@/data/projects";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, personJsonLd } from "@/lib/seo";
 
 export function generateMetadata(): Metadata {
   return buildMetadata({ path: "/" });
@@ -19,6 +19,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-paper text-ink">
+      {/* schema.org/Person — this is the site's primary page, describing
+          who the whole site is about (see lib/seo.ts). */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       <main>
         {/*
           Header → hero → first image: exact vertical rhythm via real

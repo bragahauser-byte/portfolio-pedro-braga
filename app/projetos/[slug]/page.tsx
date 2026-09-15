@@ -9,7 +9,7 @@ import { ProjectStats } from "@/components/project/ProjectStats";
 import { ProjectSpecs } from "@/components/project/ProjectSpecs";
 import { ProjectSoftware } from "@/components/project/ProjectSoftware";
 import { getProjectBySlug, projects } from "@/data/projects";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, projectJsonLd } from "@/lib/seo";
 
 // Static export (output: 'export') requires every dynamic route to be
 // pre-generated at build time — this is what makes /projetos/[slug] exist
@@ -27,7 +27,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
   return buildMetadata({
     title: `${project.title} — Pedro Braga | Arquiteto e Urbanista`,
-    description: project.shortText,
+    description: project.metaDescription,
     path: `/projetos/${project.slug}`,
   });
 }
@@ -55,6 +55,12 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="min-h-screen bg-paper text-ink">
+      {/* schema.org/CreativeWork — describes this project specifically and
+          links it back to Pedro Braga as `creator` (see lib/seo.ts). */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectJsonLd(project)) }}
+      />
       <Header theme="light" />
 
       <main>
@@ -81,15 +87,10 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         {project.detailedSpecs && <ProjectSpecs specs={project.detailedSpecs} />}
 
         {/* Any gallery images beyond what the sections above could pair up with
-            (e.g. plantas/cortes technical drawings) close out the page here. */}
-        {extraChunks.map((chunk, chunkIndex) => (
-          <ProjectGalleryImage
-            key={chunk.join("|")}
-            images={chunk.map((src, photoIndex) => ({
-              src,
-              alt: `${project.title} — imagem adicional ${chunkIndex * 2 + photoIndex + 1}`,
-            }))}
-          />
+            (e.g. plantas/cortes technical drawings) close out the page here.
+            Each already carries its own descriptive alt from data/projects.ts. */}
+        {extraChunks.map((chunk) => (
+          <ProjectGalleryImage key={chunk.map((image) => image.src).join("|")} images={chunk} />
         ))}
 
         <ProjectSoftware

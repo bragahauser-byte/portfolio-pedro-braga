@@ -24,7 +24,7 @@ export function ProjectHero({ project }: { project: Project }) {
 
       <Grid>
         <div className="project-hero-image col-span-2 relative aspect-[3/2] w-full overflow-hidden bg-[#8D8D8D] mobile-bleed sm:col-span-6">
-          <LightboxImage src={project.heroImage} alt={project.title} priority />
+          <LightboxImage src={project.heroImage} alt={project.heroImageAlt} priority />
         </div>
       </Grid>
     </>

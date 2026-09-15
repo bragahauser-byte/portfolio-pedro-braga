@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "@/components/PageTransition";
-import { buildMetadata, personJsonLd, SITE_URL } from "@/lib/seo";
+import { buildMetadata, SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,11 +26,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="font-sans font-normal text-ink">
-        {/* schema.org/Person — helps Google understand who this site is about. */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-        />
+        {/* schema.org/Person lives on the home page (app/page.tsx), not
+            here — it describes the entity the site is about, not every
+            individual page. */}
         <PageTransition>{children}</PageTransition>
       </body>
     </html>

@@ -53,6 +53,12 @@ export type BigNumber = {
   label: string;
 };
 
+/** One photo in `gallery`, with alt text specific to what it actually shows. */
+export type GalleryImage = {
+  src: string;
+  alt: string;
+};
+
 export type Project = {
   /** URL slug — backs /projetos/[slug] */
   slug: string;
@@ -62,8 +68,24 @@ export type Project = {
   subtitle: string;
   /** Short factual line (location/context), shown under the subtitle */
   shortText: string;
+  /**
+   * "City, State" — structured separately from `shortText` (which is
+   * free-form display copy) so it can be reused as plain data, e.g. in the
+   * CreativeWork JSON-LD's `locationCreated` (see lib/seo.ts).
+   */
+  location: string;
+  /**
+   * SEO meta description for this project's page (~150-160 chars,
+   * Google's usual snippet cutoff). Kept separate from `shortText`, which
+   * is shorter, UI display copy shown under the hero subtitle — reusing
+   * it directly as the meta description undersells the page in search
+   * results.
+   */
+  metaDescription: string;
   /** Cover photo — used as both the Home card image and the project hero */
   heroImage: string;
+  /** Alt text for `heroImage`, describing what's actually pictured. */
+  heroImageAlt: string;
   /** Left side of the Home card (office/author) */
   cardAuthor: string;
   /**
@@ -87,7 +109,7 @@ export type Project = {
   /** Only set when Pedro wasn't the project's author — see CreditLine. */
   creditLine?: CreditLine;
   /** Remaining photos beyond heroImage, shown alongside `sections` */
-  gallery: string[];
+  gallery: GalleryImage[];
   /** Display order on the Home page */
   order: number;
 };
@@ -99,7 +121,12 @@ export const projects: Project[] = [
     subtitle:
       "Um eixo de convivência que conecta metrô, comércio e moradia a partir de uma praça central.",
     shortText: "Trabalho Final de Graduação — Parque São Lucas, zona leste de São Paulo, SP.",
+    location: "São Paulo, SP",
+    metaDescription:
+      "Multifuncional Eixo Oratório: Trabalho Final de Graduação de Pedro Braga na zona leste de São Paulo, unindo metrô, comércio e moradia numa praça central.",
     heroImage: "/images/projects/eixo-oratorio/fachada-capa-conjunto-aereo.jpg",
+    heroImageAlt:
+      "Vista aérea da fachada do conjunto do Multifuncional Eixo Oratório, com as torres residenciais e comerciais junto à Estação Oratório",
     cardAuthor: "Trabalho Final de Graduação",
     cardLabel: "Multifuncional Eixo Oratório",
     sections: [
@@ -205,20 +232,62 @@ export const projects: Project[] = [
     // before the cortes start) → Corte A(8) → Corte B(9) → Elevação
     // Norte(10) → Sul(11) → Leste(12) → Oeste(13).
     gallery: [
-      "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
-      "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
-      "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
-      "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
-      "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
-      "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
-      "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
-      "/images/projects/eixo-oratorio/planta-coberturas.jpg",
-      "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
-      "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
-      "/images/projects/eixo-oratorio/elevacao-norte.jpg",
-      "/images/projects/eixo-oratorio/elevacao-sul.png",
-      "/images/projects/eixo-oratorio/elevacao-leste.jpg",
-      "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
+      {
+        src: "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
+        alt: "Planta do térreo comercial — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
+        alt: "Planta do subsolo com estacionamento — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
+        alt: "Planta do primeiro pavimento — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
+        alt: "Planta do segundo pavimento — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
+        alt: "Planta do pavimento tipo — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
+        alt: "Planta do pavimento tipo residencial — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
+        alt: "Legenda das tipologias de apartamento — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/planta-coberturas.jpg",
+        alt: "Planta de coberturas — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
+        alt: "Corte técnico A — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
+        alt: "Corte técnico B — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+        alt: "Elevação norte — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/elevacao-sul.png",
+        alt: "Elevação sul — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/elevacao-leste.jpg",
+        alt: "Elevação leste — Multifuncional Eixo Oratório",
+      },
+      {
+        src: "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
+        alt: "Elevação oeste — Multifuncional Eixo Oratório",
+      },
     ],
     order: 1,
   },
@@ -227,7 +296,11 @@ export const projects: Project[] = [
     title: "Área Gourmet G&J",
     subtitle: "De quintal ocioso a espaço de convívio, descanso e encontro.",
     shortText: "Reforma residencial em Borda da Mata, MG, com cozinha, estar e lazer integrados.",
+    location: "Borda da Mata, MG",
+    metaDescription:
+      "Área Gourmet G&J: reforma residencial de 106m² em Borda da Mata, MG, projetada por Pedro Braga, integrando cozinha, estar e lazer em um espaço acolhedor.",
     heroImage: "/images/projects/area-gourmet-gj/varanda-gourmet-noturna.jpg",
+    heroImageAlt: "Varanda gourmet iluminada à noite, com estrutura metálica e área de estar — Área Gourmet G&J",
     cardAuthor: "Nathalia Trota Arquitetura",
     cardAuthorHref: "https://www.nathaliatrottaarquiteta.com.br/",
     cardLabel: "Área Gourmet G&J — 2026",
@@ -278,10 +351,22 @@ export const projects: Project[] = [
     // actually belongs to Multifuncional Eixo Oratório (wrong project) —
     // moved there.
     gallery: [
-      "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
-      "/images/projects/area-gourmet-gj/planta-baixa.jpg",
-      "/images/projects/area-gourmet-gj/corte-a-tecnico.png",
-      "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",
+      {
+        src: "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
+        alt: "Estudo em croqui técnico — Área Gourmet G&J",
+      },
+      {
+        src: "/images/projects/area-gourmet-gj/planta-baixa.jpg",
+        alt: "Planta baixa — Área Gourmet G&J",
+      },
+      {
+        src: "/images/projects/area-gourmet-gj/corte-a-tecnico.png",
+        alt: "Corte técnico A — Área Gourmet G&J",
+      },
+      {
+        src: "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",
+        alt: "Corte técnico B — Área Gourmet G&J",
+      },
     ],
     order: 2,
   },

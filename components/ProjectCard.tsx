@@ -129,7 +129,7 @@ function ProjectImage({
   return (
     <Image
       src={withBasePath(project.heroImage)}
-      alt={`${project.title} — ${project.cardAuthor}`}
+      alt={project.heroImageAlt}
       fill
       priority={priority}
       sizes="(min-width: 640px) 100vw, 100vw"
