@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Grid } from "@/components/Grid";
-import { ProjectCard } from "@/components/ProjectCard";
-import { HeroText } from "@/components/HeroText";
-import { HomeEntrance, EntranceItem } from "@/components/HomeEntrance";
-import { ScrollFadeIn } from "@/components/ScrollFadeIn";
-import { projects } from "@/data/projects";
+import { Header } from "@/components/Header";
+import { ProjectFeature } from "@/components/home/ProjectFeature";
+import { ProjectIndex } from "@/components/home/ProjectIndex";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { sortedProjects } from "@/data/projects";
 import { buildMetadata, personJsonLd } from "@/lib/seo";
 
 export function generateMetadata(): Metadata {
@@ -14,66 +13,47 @@ export function generateMetadata(): Metadata {
 }
 
 export default function HomePage() {
-  const sortedProjects = [...projects].sort((a, b) => a.order - b.order);
-  const [firstProject, ...restProjects] = sortedProjects;
-
   return (
     <div className="min-h-screen bg-paper text-ink">
-      {/* schema.org/Person — this is the site's primary page, describing
-          who the whole site is about (see lib/seo.ts). */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
+      <Header />
+
       <main>
-        {/*
-          Header → hero → first image: exact vertical rhythm via real
-          padding-top in document flow (no flex/grid gap involved, so
-          nothing "swallows" these values) + the Home entrance stagger.
-        */}
-        <HomeEntrance>
-          <EntranceItem role="header">
-            <Header theme="light" />
-          </EntranceItem>
+        {/* Frase de apresentação — o <h1> da página. */}
+        <section className="pb-space-6 pt-space-7 md:pb-space-7 xl:pt-space-8">
+          <Grid>
+            <FadeIn immediate delay={0.1} className="col-span-full md:col-span-6 xl:col-span-6">
+              <h1 className="text-pretty text-lead">
+                Sou Pedro Braga, Arquiteto e Urbanista brasileiro, natural de São Paulo – SP, formado pela{" "}
+                <a
+                  href="https://portal.fmu.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-underline link-underline-static focus-ring"
+                >
+                  FMU – FIAM FAAM
+                </a>
+                .
+              </h1>
+            </FadeIn>
+          </Grid>
+        </section>
 
-          <EntranceItem>
-            <div className="pt-header-to-content">
-              <Grid>
-                <div className="col-span-2 sm:col-span-4">
-                  <HeroText />
-                </div>
-              </Grid>
-            </div>
-          </EntranceItem>
-
-          {firstProject && (
-            <EntranceItem>
-              {/* Only bears the min-232px-before-footer spacing itself when
-                  it's the last project on the page (no restProjects) — see
-                  the section below, which is the more common case. */}
-              <div className={`pt-hero-to-image ${restProjects.length > 0 ? "pb-24" : "pb-before-footer"}`}>
-                <Grid>
-                  <ProjectCard project={firstProject} priority />
-                </Grid>
-              </div>
-            </EntranceItem>
-          )}
-        </HomeEntrance>
-
-        {restProjects.length > 0 && (
-          <section className="flex flex-col gap-16 pb-before-footer sm:gap-24">
-            {restProjects.map((project) => (
-              <Grid key={project.slug}>
-                <ProjectCard project={project} />
-              </Grid>
+        <section id="projetos" aria-label="Projetos" className="scroll-mt-space-4">
+          <Grid className="gap-y-space-6 md:gap-y-space-7">
+            {sortedProjects.map((project, index) => (
+              <ProjectFeature key={project.slug} project={project} index={index} />
             ))}
-          </section>
-        )}
+          </Grid>
+        </section>
+
+        <ProjectIndex projects={sortedProjects} />
       </main>
 
-      <ScrollFadeIn>
-        <Footer />
-      </ScrollFadeIn>
+      <Footer />
     </div>
   );
 }

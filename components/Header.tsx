@@ -1,64 +1,46 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { MouseEvent } from "react";
+import { usePathname } from "next/navigation";
 import { normalizePathname } from "@/lib/paths";
 import { Grid } from "./Grid";
-
-type Theme = "light" | "dark";
+import { TransitionLink, usePageTransition } from "./providers/PageTransition";
+import { scrollToElement } from "./providers/SmoothScroll";
 
 /**
- * Static by design — no self-contained entrance animation. On Home it's
- * animated externally as the first step of <HomeEntrance>; on every other
- * page, entrance is handled by the whole-page transition in
- * PageTransition.tsx. Animating it a second time here would double up and
- * fight those.
+ * Header mínimo: Pedro Braga à esquerda, Sobre mim e Contato à direita,
+ * 16px. O link da seção atual fica preto, os outros em cinza (a Home e as
+ * páginas de projeto contam como "Pedro Braga"). Não é sticky — a abertura
+ * do projeto usa a coluna sticky própria.
  */
-export function Header({ theme = "light" }: { theme?: Theme }) {
+export function Header() {
   const pathname = normalizePathname(usePathname());
-  const router = useRouter();
-
-  const isHome = pathname === "/";
+  const { navigate } = usePageTransition();
   const isSobre = pathname === "/sobre-mim";
 
-  // The active link is already at max contrast — no hover state needed.
-  // Inactive links use `.hover-link` (muted → ink/paper on hover *and*
-  // keyboard focus, underline fading in at the same time). Every link
-  // gets `.focus-ring` for the visible :focus-visible outline and
-  // `.tap-target` for a >=44px mobile hit area.
-  const activeColor = theme === "dark" ? "text-paper" : "text-ink";
-  const inactiveColor = "text-muted hover-link";
-  const linkBase = "text-base sm:text-header-name cursor-pointer focus-ring tap-target";
+  const base = "text-nav focus-ring tap-target link-underline";
+  const active = "text-ink";
+  const inactive = "text-muted";
 
-  function handleContatoClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  function handleContato(e: MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     const footer = document.getElementById("contato");
-    if (footer) {
-      footer.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      // Footer isn't on this page yet — fall back to navigating home then scrolling.
-      router.push("/#contato");
-    }
+    if (footer) scrollToElement(footer);
+    else navigate("/#contato");
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full pb-0 pt-nav-padding-y">
-      <Grid as="nav">
-        <div className="col-span-2 flex items-center justify-between sm:col-span-6">
-          <Link
-            href="/"
-            className={`${linkBase} ${isHome ? activeColor : inactiveColor}`}
-          >
+    <header className="relative z-40 w-full pt-space-3 md:pt-space-4">
+      <Grid as="nav" aria-label="Principal">
+        <div className="col-span-full flex items-center justify-between">
+          <TransitionLink href="/" className={`${base} ${isSobre ? inactive : active}`}>
             Pedro Braga
-          </Link>
-          <div className="flex items-center gap-6 sm:gap-16">
-            <Link
-              href="/sobre-mim"
-              className={`${linkBase} ${isSobre ? activeColor : inactiveColor}`}
-            >
+          </TransitionLink>
+          <div className="flex items-center gap-space-3 md:gap-space-4">
+            <TransitionLink href="/sobre-mim" className={`${base} ${isSobre ? active : inactive}`}>
               Sobre mim
-            </Link>
-            <a href="#contato" onClick={handleContatoClick} className={`${linkBase} ${inactiveColor}`}>
+            </TransitionLink>
+            <a href="#contato" onClick={handleContato} className={`${base} ${inactive}`}>
               Contato
             </a>
           </div>

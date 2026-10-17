@@ -1,8 +1,5 @@
-import type { Metadata } from "next";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Grid } from "@/components/Grid";
-import { BioSection } from "@/components/BioSection";
+import type { Metadata, Viewport } from "next";
+import { AboutView } from "@/components/about/AboutView";
 import { buildMetadata } from "@/lib/seo";
 
 export function generateMetadata(): Metadata {
@@ -14,6 +11,10 @@ export function generateMetadata(): Metadata {
   });
 }
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
 const BIO_PARAGRAPHS = [
   "Nasci e cresci em São Paulo, uma cidade que, pela sua escala, diversidade e constante transformação, despertou em mim diferentes formas de observar e compreender a arquitetura. Viajar e conhecer novos lugares, culturas e modos de viver ampliou ainda mais esse olhar, fazendo da observação uma parte importante do meu processo de aprendizado.",
   "Minha relação com a arquitetura vai além do projeto. Tenho grande interesse pelas artes e procuro compreender os espaços também através do cotidiano: dos percursos, das rotinas, das relações entre as pessoas e das diferentes maneiras de ocupar e transformar um lugar. Acredito que muito do que aprendemos sobre arquitetura está justamente no viver.",
@@ -22,25 +23,5 @@ const BIO_PARAGRAPHS = [
 ];
 
 export default function SobreMimPage() {
-  return (
-    <div className="theme-dark min-h-screen bg-night text-paper">
-      <Header theme="dark" />
-
-      <main>
-        {/* Same 164px header→content distance used on Home, for vertical consistency between screens. */}
-        <section className="pb-before-footer pt-header-to-content">
-          <Grid>
-            {/* Page's single <h1> — was missing entirely before (the bio
-                paragraphs had no heading above them at all). */}
-            <h1 className="col-span-2 mb-8 text-[24px] leading-[31px] text-paper sm:col-span-5 sm:mb-12 sm:text-hero">
-              Sobre mim
-            </h1>
-            <BioSection paragraphs={BIO_PARAGRAPHS} />
-          </Grid>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-  );
+  return <AboutView paragraphs={BIO_PARAGRAPHS} />;
 }
