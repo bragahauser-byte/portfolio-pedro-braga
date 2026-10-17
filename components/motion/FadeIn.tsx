@@ -31,7 +31,7 @@ export function FadeIn({
   };
 
   return immediate ? (
-    <MotionTag className={className} initial={hidden} animate={visible} transition={transition}>
+    <MotionTag data-motion className={className} initial={hidden} animate={visible} transition={transition}>
       {children}
     </MotionTag>
   ) : (

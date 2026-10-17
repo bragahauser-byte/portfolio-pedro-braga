@@ -55,7 +55,12 @@ export function RevealImage({
   const shown = priority || inView;
 
   const mask = reducedMotion
-    ? { initial: { opacity: 0 }, animate: shown ? { opacity: 1 } : { opacity: 0 } }
+    ? {
+        // O HTML do servidor já vem com a máscara fechada (no servidor não
+        // se sabe a preferência) — com reduced motion ela é aberta na hora.
+        initial: { opacity: 0 },
+        animate: { clipPath: "inset(0% 0% 0% 0%)", opacity: shown ? 1 : 0 },
+      }
     : priority
       ? { initial: false as const, animate: {} }
       : {
@@ -71,6 +76,7 @@ export function RevealImage({
       data-cursor={cursor}
     >
       <motion.div
+        data-motion
         className="absolute inset-0"
         {...mask}
         transition={{ duration: reducedMotion ? DURATION.reduced : DURATION.reveal, ease: EASE_EXPO_OUT }}
@@ -86,7 +92,7 @@ export function RevealImage({
           <motion.div
             className="h-full w-full"
             initial={reducedMotion ? false : { scale: REVEAL_SCALE }}
-            animate={reducedMotion ? {} : shown ? { scale: 1 } : { scale: REVEAL_SCALE }}
+            animate={reducedMotion ? { scale: 1 } : shown ? { scale: 1 } : { scale: REVEAL_SCALE }}
             transition={{ duration: DURATION.reveal + 0.3, ease: EASE_EXPO_OUT }}
           >
             <Picture src={src} alt={alt} sizes={sizes} priority={priority} focal={focal} className="block h-full w-full" />

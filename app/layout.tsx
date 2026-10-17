@@ -41,6 +41,10 @@ export default function RootLayout({
       <body className="font-sans font-normal text-ink">
         {/* schema.org/Person fica na Home (app/page.tsx) — descreve quem o
             site apresenta, não cada página. */}
+        {/* Sem JavaScript, nada fica preso no estado inicial das animações. */}
+        <noscript>
+          <style>{"[data-motion]{clip-path:none!important;opacity:1!important;transform:none!important}"}</style>
+        </noscript>
         <SmoothScroll />
         <PageTransition>{children}</PageTransition>
         <Cursor />

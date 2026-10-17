@@ -62,18 +62,19 @@ export function SplitLines({
             {/* Mesmo DOM com ou sem reduced motion (evita erro de hidratação):
                 só muda o que anima — subir a linha ou apenas o fade. */}
             <motion.span
+              data-motion
               className="inline-block"
               initial={reducedMotion ? { opacity: 0 } : { y: "110%" }}
               animate={
                 reducedMotion
-                  ? { opacity: shown ? 1 : 0 }
+                  ? { y: "0%", opacity: shown ? 1 : 0 }
                   : shown
                     ? { y: "0%" }
                     : { y: "110%" }
               }
               transition={
                 reducedMotion
-                  ? { duration: DURATION.reduced }
+                  ? { duration: DURATION.reduced, y: { duration: 0 } }
                   : {
                       duration: DURATION.line,
                       ease: EASE_EXPO_OUT,
