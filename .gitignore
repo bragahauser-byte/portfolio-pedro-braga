@@ -46,3 +46,9 @@ next-env.d.ts
 
 # bug-report screenshots (not site content)
 /erros para corrigir
+
+# fontes originais e referências locais do redesign (não são conteúdo do site;
+# só os .woff2 usados ficam em app/fonts)
+/nova tipografia
+/referencia de projeto
+/print dos erros

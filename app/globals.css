@@ -2,112 +2,188 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Grid — única fonte de verdade para margem, gutter e nº de colunas.
+     Mobile: 4 colunas / 20px / 14px. */
+  --grid-cols: 4;
+  --grid-margin: 20px;
+  --grid-gutter: 14px;
+
+  /* #707070 dá 4.9:1 sobre branco (WCAG AA pede 4.5:1). O #8A8A8A da
+     referência só passa sobre o preto, então fica restrito ao .theme-dark. */
+  --color-muted: #707070;
+  --color-focus: #0a0a0a;
+  --ease-expo-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --grid-cols: 8;
+    --grid-margin: 32px;
+    --grid-gutter: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --grid-cols: 12;
+    --grid-margin: 48px;
+  }
+}
+
+/* Telas escuras (Sobre mim, fechamento do projeto) — #8A8A8A sobre #000
+   dá 6.1:1. */
+.theme-dark {
+  --color-muted: #8a8a8a;
+  --color-focus: #ffffff;
+}
+
 html {
-  scroll-behavior: smooth;
-  /* Only `html` gets this — it alone is enough to stop horizontal scroll
-     site-wide. Setting it on `body` too (as this used to) forces `body`'s
-     computed overflow-y to 'auto' (setting only one axis to non-'visible'
-     computes the other the same way), and since a non-'visible' overflow
-     on the root element means `body`'s overflow-y no longer propagates up
-     to the viewport, `body` ends up establishing its OWN independent
-     scrolling box, nested inside the real one. Confirmed in the browser:
-     that extra box gets its own scrollbar reservation whenever `body`'s
-     content needs one (reliably after a client-side route change, since
-     the outgoing and incoming pages briefly coexist) — `body.clientWidth`
-     drops a scrollbar's-width below `documentElement.clientWidth`, and
-     since every percentage width on the page resolves against `body`'s
-     content box, the Grid's centering and every image/text block inside
-     it were measurably off (never touching the true site-wide margins)
-     until the next full page load reset it. */
+  /* Só no html: colocar overflow no body cria uma segunda caixa de
+     rolagem que desalinha o grid depois de navegar no cliente. */
   overflow-x: hidden;
 }
 
 body {
   font-weight: 400;
+  background: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
 }
 
-:root {
-  /* #636363 is 6.0:1 on white (WCAG AA needs 4.5:1) — fine here. */
-  --color-muted: #636363;
-  --color-focus: #000000;
+/* Lenis (smooth scroll) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
-/* Scope for dark-background screens (Sobre mim, and any future dark
-   section) — applied once on the page's root element. #636363 on
-   #0C0C0C is only ~3.3:1, so the same `text-muted` class needs a
-   lighter shade here to stay WCAG AA; #8A8A8A clears it at ~5.7:1. */
-.theme-dark {
-  --color-muted: #8a8a8a;
-  --color-focus: #ffffff;
+@layer components {
+  .site-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    padding-left: var(--grid-margin);
+    padding-right: var(--grid-margin);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1920px;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
 
-  /* Keyboard-focus indicator, sitewide. :focus-visible (not :focus) so it
-     shows for keyboard/AT navigation but not on mouse clicks — and it's
-     never suppressed without a visible replacement. Color follows
-     --color-focus, which flips with .theme-dark like --color-muted. */
+  /* Foco visível só para teclado (:focus-visible), nunca removido sem
+     substituto. A cor acompanha --color-focus (troca no .theme-dark). */
   .focus-ring {
     outline: none;
   }
   .focus-ring:focus-visible {
     outline: 2px solid var(--color-focus);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 
-  /* Single hover recipe for every clickable text on the site (header nav,
-     footer, inline links like "FMU – FIAM FAAM", project card captions):
-     color eases from whatever tone the element rests at toward the
-     context's "active" tone (--color-focus: ink on light, paper on dark),
-     while an underline fades in underneath — both at once, same easing.
-     Resting color is NOT set here (that stays with text-ink/text-muted/
-     inherited at each call site) so this is pure hover *mechanism*, reusable
-     regardless of an element's base tone. The underline is reserved via
-     `decoration-transparent` at rest (not by toggling text-decoration-line)
-     so its fade-in is a color transition too, with zero layout shift. */
-  .hover-link {
-    text-decoration-line: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 3px;
-    transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
+  /* Sublinhado fino que cresce da esquerda para a direita — receita única
+     para todo link de texto. A cor de repouso fica com quem usa a classe. */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    padding-bottom: 1px;
+    transition:
+      background-size 600ms var(--ease-expo-out),
+      color 300ms var(--ease-expo-out);
   }
-  .hover-link:hover,
-  .hover-link:focus-visible {
+  .link-underline:hover,
+  .link-underline:focus-visible,
+  .group:hover .link-underline,
+  .group:focus-visible .link-underline {
+    background-size: 100% 1px;
     color: var(--color-focus);
-    text-decoration-color: currentColor;
+  }
+  /* Variante já sublinhada em repouso (links do rodapé / Sobre mim): o fio
+     some e volta crescendo no hover. */
+  .link-underline-static {
+    background-size: 100% 1px;
+  }
+  .link-underline-static:hover,
+  .link-underline-static:focus-visible {
+    animation: underline-regrow 700ms var(--ease-expo-out);
   }
 
-  /* Mobile exception to the Grid's side margin: images run edge-to-edge
-     on small screens (text siblings keep the margin) — cancels the
-     Grid's mobile padding (`grid-margin-sm` in tailwind.config.ts; keep
-     the two in sync) and resets to normal from `sm:` up. */
+  /* Imagens que correm de borda a borda no mobile, cancelando a margem do
+     grid. Volta ao normal a partir do tablet. */
   .mobile-bleed {
-    margin-left: -16px;
-    margin-right: -16px;
-    width: calc(100% + 32px);
+    margin-left: calc(-1 * var(--grid-margin));
+    margin-right: calc(-1 * var(--grid-margin));
+    width: calc(100% + 2 * var(--grid-margin));
+    border-radius: 0;
   }
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .mobile-bleed {
       margin-left: 0;
       margin-right: 0;
       width: 100%;
+      border-radius: 6px;
     }
   }
 
-  /* Guarantees a >=44x44px hit area on touch screens without changing
-     the visible text size — extra hit area comes from padding, which
-     also nudges layout, so it's opt-in per element rather than global. */
-  @media (max-width: 639px) {
+  /* Área de toque ≥44px no mobile sem mudar o tamanho visível do texto. */
+  @media (max-width: 767px) {
     .tap-target {
       min-height: 44px;
-      min-width: 44px;
       display: inline-flex;
       align-items: center;
     }
   }
+}
+
+@keyframes underline-regrow {
+  0% {
+    background-size: 100% 1px;
+    background-position: 100% 100%;
+  }
+  45% {
+    background-size: 0% 1px;
+    background-position: 100% 100%;
+  }
+  46% {
+    background-position: 0 100%;
+  }
+  100% {
+    background-size: 100% 1px;
+    background-position: 0 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-underline,
+  .link-underline-static {
+    transition: color 150ms linear;
+    animation: none !important;
+  }
+}
+
+/* Cursor customizado (components/Cursor.tsx): esconde o nativo só onde o
+   rótulo "Ver" / "+" aparece. */
+.has-cursor [data-cursor] {
+  cursor: none;
 }
