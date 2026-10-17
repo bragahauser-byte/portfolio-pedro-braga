@@ -2,13 +2,9 @@ import { RevealImage } from "@/components/motion/RevealImage";
 import { TransitionLink } from "@/components/providers/PageTransition";
 import type { Project } from "@/data/projects";
 
-// Imagens são as únicas peças que mudam de lugar no grid. Os projetos
-// alternam de tamanho para a lista ter hierarquia: largura total
-// (colunas 1–12) e metade, encostada à direita (colunas 7–12).
-const POSITIONS = ["col-span-full", "col-span-full md:col-span-4 md:col-start-5 xl:col-span-6 xl:col-start-7"];
-
 /**
- * Projeto na Home: imagem + legenda curta (nome [+ ano] em preto,
+ * Projeto na Home: todos iguais — imagem na largura total do grid
+ * (colunas 1–12) + legenda curta (nome [+ ano] em preto,
  * autor/contexto em cinza embaixo). Quando o autor é um escritório com site próprio,
  * o nome dele vira link externo separado — nunca um link dentro de outro.
  */
@@ -16,7 +12,7 @@ export function ProjectFeature({ project, index }: { project: Project; index: nu
   const href = `/projetos/${project.slug}`;
 
   return (
-    <article className={POSITIONS[index % POSITIONS.length]}>
+    <article className="col-span-full">
       <TransitionLink
         href={href}
         aria-label={`Ver projeto: ${project.title}`}
@@ -30,8 +26,7 @@ export function ProjectFeature({ project, index }: { project: Project; index: nu
               focal={project.hero.focal}
               priority={index === 0}
               parallax={index > 0}
-              sizes={index % 2 === 0 ? "(min-width: 768px) calc(100vw - 80px), 100vw" : "(min-width: 768px) 50vw, 100vw"}
-              className=""
+              sizes="(min-width: 768px) calc(100vw - 80px), 100vw"
             />
           </span>
         </span>
