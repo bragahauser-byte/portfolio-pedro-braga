@@ -1,118 +1,121 @@
-// Portfolio project data — hardcoded for now, structured so it can be
-// lifted into a CMS later without changing the shape consumers rely on.
+// Dados dos projetos — tudo que aparece em /projetos/[slug] e na Home sai
+// daqui, então um projeto novo entra só editando este arquivo:
+// 1. Coloque as imagens em /public/images/projects/<slug>/ com nomes
+//    descritivos (ex.: fachada-noturna.jpg) e rode `npm run images` para
+//    gerar as versões responsivas + data/image-manifest.json.
+// 2. Adicione uma entrada abaixo (`order` crescente = ordem na Home).
+// 3. /app/projetos/[slug]/page.tsx gera a página via generateStaticParams().
 //
-// To add a new project:
-// 1. Drop its images in /public/images/projects/<slug>/ with descriptive
-//    filenames (e.g. fachada-noturna.jpg, not an export/camera default)
-// 2. Add an entry here (keep `order` ascending for display order)
-// 3. /app/projetos/[slug]/page.tsx picks it up automatically via
-//    generateStaticParams() — nothing else to wire up.
+// Regra de conteúdo: textos, números e créditos são do Pedro — diagramar
+// à vontade, reescrever nunca.
 
 /**
- * How a section's photo(s) should be laid out — picked explicitly per
- * section instead of one generic gallery treating every image the same:
- * - "full-bleed": one photo, full content width.
- * - "diptico-simetrico": two photos side by side, equal width, standard gutter.
- * - "assimetrica-aberta": two photos as two separate editorial moments —
- *   the first medium-sized and left-anchored, the second lower and
- *   right-anchored, with generous whitespace between them (never a paired
- *   "gallery" look). Collapses to stacked full-width photos on mobile.
+ * Como as imagens de uma seção se compõem no grid de 12 colunas:
+ * - "full": largura total, proporção natural da imagem (nunca corta).
+ * - "panorama": largura total, recorte 21:9 (só para fotos/renders).
+ * - "pair": duas imagens lado a lado e assimétricas — vertical 4:5 nas
+ *   colunas 1–5 e horizontal 3:2 nas colunas 6–12, alinhadas pela base.
+ * - "offset-left": horizontal nas colunas 1–7, proporção natural.
+ * - "offset-right": vertical 4:5 nas colunas 7–12 (recorte com `focal`).
+ * No mobile tudo vira uma coluna, de borda a borda.
  */
-export type SectionImageVariant = "full-bleed" | "diptico-simetrico" | "assimetrica-aberta";
+export type ImageLayout = "full" | "pair" | "offset-left" | "offset-right" | "panorama";
 
-export type SectionImages = {
-  variant: SectionImageVariant;
-  photos: string[];
+export type ProjectImage = {
+  src: string;
+  /** Alt descritivo em pt-BR — o que a imagem realmente mostra. */
+  alt: string;
+  /** object-position para recortes (ex.: "40% 50%"). Padrão: centro. */
+  focal?: string;
+};
+
+export type SectionMedia = {
+  layout: ImageLayout;
+  images: ProjectImage[];
 };
 
 export type ProjectSection = {
   title: string;
   body: string;
-  /** Photo(s) shown right after this section's text, with an explicit layout. */
-  images?: SectionImages;
+  /** Composições mostradas depois do texto, na ordem. */
+  media?: SectionMedia[];
 };
 
-export type TechSpec = {
+export type ProjectNumber = {
+  value: number;
+  /** Unidade em sobrescrito, ex.: "m²". */
+  unit?: string;
+  label: string;
+  /** Count-up ao entrar na tela. Anos ficam estáticos. */
+  animate: boolean;
+  /** Sem separador de milhar (anos: 2026, não 2.026). */
+  plain?: boolean;
+};
+
+export type Spec = {
   label: string;
   value: string;
 };
 
-/**
- * Authorship credit for a project Pedro didn't design himself (e.g. an
- * outside office's project where he only did modelagem/desenho técnico) —
- * rendered as a small, muted line under the software credit, with a link
- * on the office name. Omit entirely for Pedro's own/TFG projects.
- */
-export type CreditLine = {
-  authorName: string;
-  authorHref: string;
-};
-
-export type BigNumber = {
-  value: string;
-  label: string;
-};
-
-/** One photo in `gallery`, with alt text specific to what it actually shows. */
-export type GalleryImage = {
+/** Desenho técnico (planta, corte, elevação, croqui) — sempre object-contain. */
+export type Drawing = {
   src: string;
   alt: string;
+  /** Legenda curta mostrada sob o desenho. */
+  caption: string;
+};
+
+export type Credits = {
+  /**
+   * Autoria quando o projeto é do Pedro (ex.: TFG). Mostrado na ficha
+   * técnica como "Autoria".
+   */
+  authorship?: { title: string; body: string };
+  /**
+   * Escritório autor quando o Pedro fez só modelagem/desenho técnico.
+   * Vira a linha "Projeto de autoria de <office>. Modelagem e desenho
+   * técnico por Pedro Braga." e substitui `authorship`.
+   */
+  office?: { name: string; href: string };
 };
 
 export type Project = {
-  /** URL slug — backs /projetos/[slug] */
+  /** Slug da URL — /projetos/[slug] */
   slug: string;
-  /** Project name */
   title: string;
-  /** One-line pitch, shown large under the title on the project page */
+  /** Frase de abertura, em lead sob o título. */
   subtitle: string;
-  /** Short factual line (location/context), shown under the subtitle */
+  /** Linha factual curta, em cinza (coluna sticky da abertura). */
   shortText: string;
-  /**
-   * "City, State" — structured separately from `shortText` (which is
-   * free-form display copy) so it can be reused as plain data, e.g. in the
-   * CreativeWork JSON-LD's `locationCreated` (see lib/seo.ts).
-   */
+  /** "Cidade, UF" — também usado no JSON-LD (lib/seo.ts). */
   location: string;
-  /**
-   * SEO meta description for this project's page (~150-160 chars,
-   * Google's usual snippet cutoff). Kept separate from `shortText`, which
-   * is shorter, UI display copy shown under the hero subtitle — reusing
-   * it directly as the meta description undersells the page in search
-   * results.
-   */
+  /** Meta description da página (~150–160 caracteres). */
   metaDescription: string;
-  /** Cover photo — used as both the Home card image and the project hero */
-  heroImage: string;
-  /** Alt text for `heroImage`, describing what's actually pictured. */
-  heroImageAlt: string;
-  /** Left side of the Home card (office/author) */
-  cardAuthor: string;
-  /**
-   * When the author is an outside office/collaborator with their own site,
-   * `cardAuthor` becomes its own external link (new tab) instead of part
-   * of the card's internal link to /projetos/[slug] — e.g. a partner
-   * studio. Leave unset when the author is Pedro himself / a TFG, so the
-   * name stays plain text inside the card's single internal link.
-   */
-  cardAuthorHref?: string;
-  /** Right side of the Home card, gray (project name [+ year]) */
-  cardLabel: string;
-  /** Editorial text blocks alternating left/right down the page */
+  /** Metadados da coluna sticky da abertura. */
+  meta: Spec[];
+  /** Capa: card da Home, primeira imagem da abertura e imagem OG. */
+  hero: ProjectImage;
+  /** Demais imagens fortes empilhadas na abertura, depois da capa. */
+  opening: ProjectImage[];
   sections: ProjectSection[];
-  /** Marquee stats (e.g. area, unit count) */
-  bigNumbers: BigNumber[];
-  authorship: { title: string; body: string };
-  /** Optional second, denser spec sheet (only some projects have one) */
-  detailedSpecs?: TechSpec[];
+  numbers: ProjectNumber[];
+  /** Ficha técnica — só o que existe; linhas sem dado não entram. */
+  specs: Spec[];
   software: { value: string; label: string };
-  /** Only set when Pedro wasn't the project's author — see CreditLine. */
-  creditLine?: CreditLine;
-  /** Remaining photos beyond heroImage, shown alongside `sections` */
-  gallery: GalleryImage[];
-  /** Display order on the Home page */
+  credits: Credits;
+  drawings: Drawing[];
+  /** Lado esquerdo da legenda do card (autor/escritório ou contexto). */
+  cardAuthor: string;
+  /** Quando o autor tem site próprio, o nome vira link externo. */
+  cardAuthorHref?: string;
+  /** Lado direito da legenda do card, em cinza. */
+  cardLabel: string;
+  /** Ordem na Home. */
   order: number;
 };
+
+const EIXO = "/images/projects/eixo-oratorio";
+const GJ = "/images/projects/area-gourmet-gj";
 
 export const projects: Project[] = [
   {
@@ -124,91 +127,149 @@ export const projects: Project[] = [
     location: "São Paulo, SP",
     metaDescription:
       "Multifuncional Eixo Oratório: Trabalho Final de Graduação de Pedro Braga na zona leste de São Paulo, unindo metrô, comércio e moradia numa praça central.",
-    heroImage: "/images/projects/eixo-oratorio/fachada-capa-conjunto-aereo.jpg",
-    heroImageAlt:
-      "Vista aérea da fachada do conjunto do Multifuncional Eixo Oratório, com as torres residenciais e comerciais junto à Estação Oratório",
-    cardAuthor: "Trabalho Final de Graduação",
-    cardLabel: "Multifuncional Eixo Oratório",
+    // TODO: ano do TFG não consta nos dados — confirmar com o Pedro para
+    // incluir um item "Ano" aqui.
+    meta: [
+      { label: "Local", value: "São Paulo, SP" },
+      { label: "Tipo", value: "Trabalho Final de Graduação" },
+      { label: "Uso", value: "Misto" },
+      { label: "Ferramentas", value: "SketchUp + AutoCAD" },
+    ],
+    hero: {
+      src: `${EIXO}/fachada-capa-conjunto-aereo.jpg`,
+      alt: "Vista aérea da fachada do conjunto do Multifuncional Eixo Oratório, com as torres residenciais e comerciais junto à Estação Oratório",
+    },
+    // TODO: implantacao-vista-aerea.jpg é idêntico byte a byte à capa
+    // (fachada-capa-conjunto-aereo.jpg) — fica fora da diagramação para não
+    // repetir a mesma imagem. O arquivo continua na pasta.
+    opening: [
+      {
+        src: `${EIXO}/vista-aerea-torres-metro.jpg`,
+        alt: "Vista frontal das duas torres a partir da avenida, com o embasamento comercial e o acesso marcado em verde",
+      },
+      {
+        src: `${EIXO}/fachada-rua-diurna.jpg`,
+        alt: "Vista diurna da escadaria e das rampas ajardinadas que vencem o desnível entre a avenida e a galeria",
+      },
+    ],
     sections: [
       {
         title: "O conceito",
         body: "O Eixo Oratório nasce de uma praça central que articula o fluxo de pedestres entre as avenidas Oratório e Anhaia Mello. O projeto amplia os espaços coletivos do bairro, integrando comércio, serviços e moradia em um só percurso urbano.",
-        images: {
-          variant: "diptico-simetrico",
-          photos: [
-            "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg",
-            "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg",
-          ],
-        },
+        media: [
+          {
+            layout: "panorama",
+            images: [
+              {
+                src: `${EIXO}/cobertura-vista-aerea.jpg`,
+                alt: "Vista aérea vertical do conjunto, com as coberturas ajardinadas, o entorno de casas e a via elevada da estação",
+                focal: "50% 45%",
+              },
+            ],
+          },
+        ],
       },
       {
         title: "A praça e o percurso",
         body: "A galeria vence o desnível entre as duas avenidas por meio de uma escadaria e rampa na fachada oeste, com bancos e árvores que transformam a circulação em uma praça verticalizada — acessível a moradores, trabalhadores e usuários da Estação Oratório.",
-        // Composição assimétrica aberta: a fachada (momento urbano) e a
-        // galeria interior (momento de percurso) como dois instantes
-        // separados, não um díptico colado — ver referencias-visuais/2.
-        images: {
-          variant: "assimetrica-aberta",
-          photos: [
-            "/images/projects/eixo-oratorio/fachada-rua-angulo-alternativo.jpg",
-            "/images/projects/eixo-oratorio/passagem-publica-terreo.jpg",
-          ],
-        },
+        media: [
+          {
+            layout: "offset-left",
+            images: [
+              {
+                src: `${EIXO}/praca-acesso-paisagismo.jpg`,
+                alt: "Praça de acesso com escadaria, rampas e canteiros ajardinados junto à base do edifício",
+              },
+            ],
+          },
+          {
+            layout: "offset-right",
+            images: [
+              {
+                src: `${EIXO}/fachada-rua-angulo-alternativo.jpg`,
+                alt: "Galeria coberta do térreo com pessoas circulando entre árvores e bancos, e a escada verde de acesso ao fundo",
+                focal: "38% 50%",
+              },
+            ],
+          },
+        ],
       },
       {
+        // TODO: o texto diz "Catorze lojas", mas Números do projeto e a
+        // Composição dizem 16 lojas comerciais — aguardando o Pedro
+        // confirmar o número. Nada foi alterado.
         title: "O térreo comercial",
         body: "Catorze lojas de diferentes dimensões ocupam o térreo, entre barbearia, loja de roupas, minimercado e lanchonetes. Um bicicletário para 200 bicicletas dialoga com a ciclovia da Avenida Anhaia Mello, tornando a galeria também um ponto de parada para ciclistas.",
-        images: {
-          variant: "full-bleed",
-          photos: ["/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg"],
-        },
+        media: [
+          {
+            layout: "offset-left",
+            images: [
+              {
+                src: `${EIXO}/vista-aerea-torres-contexto.jpg`,
+                alt: "Vista da rua com as torres residenciais e as lojas do térreo comercial abertas para a calçada",
+              },
+            ],
+          },
+        ],
       },
       {
         title: "A fachada norte",
         body: "Vãos amplos garantem ventilação cruzada, luz natural e visibilidade entre o interior e o espaço público. O setor recebe ainda eventos temporários, como feiras e atividades comunitárias, reforçando o caráter aberto do projeto.",
-        // Era um "díptico" com praca-acesso-paisagismo.jpg + fachadas-comparativo.jpg,
-        // mas fachadas-comparativo.jpg já É um comparativo de 2 fachadas
-        // composto em um único arquivo (confirmado no arquivo original) —
-        // colocá-lo dentro de uma metade de díptico espremia as duas fotos
-        // internas sem seguir o grid/gutter do site. Correto é full-bleed
-        // com essa imagem sozinha; praca-acesso-paisagismo.jpg foi realocada
-        // para "O contexto urbano" abaixo.
-        images: {
-          variant: "full-bleed",
-          photos: ["/images/projects/eixo-oratorio/fachadas-comparativo.jpg"],
-        },
+        // fachadas-comparativo.jpg já é um comparativo de 2 vistas num só
+        // arquivo — sempre "full", na proporção natural, sem recorte.
+        media: [
+          {
+            layout: "full",
+            images: [
+              {
+                src: `${EIXO}/fachadas-comparativo.jpg`,
+                alt: "Comparativo de duas vistas das fachadas das torres, lado a lado",
+              },
+            ],
+          },
+        ],
       },
       {
         title: "Os usos do edifício",
         body: "Além do térreo comercial, o multifuncional reúne escritórios, coworking, auditório, espaços expositivos e ambientes multiuso. No primeiro pavimento, uma academia e uma livraria ancoram áreas flexíveis para exposições e apresentações artísticas.",
-        images: {
-          variant: "full-bleed",
-          photos: ["/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg"],
-        },
+        media: [
+          {
+            layout: "offset-right",
+            images: [
+              {
+                src: `${EIXO}/passagem-publica-terreo.jpg`,
+                alt: "Espaço expositivo amplo, com obras nas paredes, bancos e visitantes, aberto para a vegetação",
+                focal: "55% 50%",
+              },
+            ],
+          },
+        ],
       },
       {
         title: "O contexto urbano",
         body: "Inserido em um entorno predominantemente residencial e com baixa diversidade comercial, o projeto propõe maior ênfase em comércio e serviços, consolidando-se como um polo de atividades para a região.",
-        images: {
-          variant: "diptico-simetrico",
-          photos: [
-            "/images/projects/eixo-oratorio/cobertura-vista-aerea.jpg",
-            "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg",
-          ],
-        },
+        media: [
+          {
+            layout: "full",
+            images: [
+              {
+                src: `${EIXO}/vista-aerea-metro-alternativa.jpg`,
+                alt: "Vista aérea das duas torres sobre o embasamento comercial, ao lado da via elevada da Estação Oratório",
+              },
+            ],
+          },
+        ],
       },
     ],
-    bigNumbers: [
-      { value: "136", label: "Apartamentos" },
-      { value: "28.995m²", label: "Área construída" },
-      { value: "110", label: "Salas comerciais" },
-      { value: "16", label: "Lojas comerciais" },
+    numbers: [
+      { value: 136, label: "Apartamentos", animate: true },
+      { value: 28995, unit: "m²", label: "Área construída", animate: true },
+      { value: 110, label: "Salas comerciais", animate: true },
+      // TODO: 16 aqui e na Composição, "Catorze lojas" no texto do térreo —
+      // confirmar com o Pedro.
+      { value: 16, label: "Lojas comerciais", animate: true },
     ],
-    authorship: {
-      title: "Arquitetura e Urbanismo — Pedro Braga",
-      body: "Trabalho Final de Graduação orientado por Braz Casagrande, apresentado na FIAM-FAAM Centro Universitário.",
-    },
-    detailedSpecs: [
+    specs: [
       { label: "Local", value: "São Paulo, SP" },
       { label: "Uso", value: "Misto" },
       { label: "Área do terreno", value: "7.406,84 m²" },
@@ -221,74 +282,89 @@ export const projects: Project[] = [
       },
     ],
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
-    // Every photo above is already placed via `sections[].images` — this
-    // array is just the technical drawings (plantas/cortes/elevações),
-    // trailing after the stats/specs blocks. Ordered by display sequence
-    // (checked against the actual files, not the filenames): Térreo(1) →
-    // Subsolo(2) → 1º Pav.(3) → 2º Pav.(4) → Pavimento Tipo(5) →
-    // Pavimento Tipo Resid.(7, its typology legend has no number of its
-    // own but reads right after it) → Coberturas(6 — last planta, shown
-    // here rather than in strict sheet-number order so it lands right
-    // before the cortes start) → Corte A(8) → Corte B(9) → Elevação
-    // Norte(10) → Sul(11) → Leste(12) → Oeste(13).
-    gallery: [
+    credits: {
+      authorship: {
+        title: "Arquitetura e Urbanismo — Pedro Braga",
+        body: "Trabalho Final de Graduação orientado por Braz Casagrande, apresentado na FIAM-FAAM Centro Universitário.",
+      },
+    },
+    // Ordem das pranchas conferida contra os arquivos: Térreo → Subsolo →
+    // 1º Pav. → 2º Pav. → Pavimento Tipo → Tipo Residencial (+ legenda das
+    // tipologias) → Coberturas → Corte A → Corte B → Elevações N, S, L, O.
+    drawings: [
       {
-        src: "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg",
+        src: `${EIXO}/planta-terreo-comercial.jpg`,
         alt: "Planta do térreo comercial — Multifuncional Eixo Oratório",
+        caption: "Planta do térreo comercial",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg",
+        src: `${EIXO}/planta-subsolo-estacionamento.jpg`,
         alt: "Planta do subsolo com estacionamento — Multifuncional Eixo Oratório",
+        caption: "Planta do subsolo com estacionamento",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg",
+        src: `${EIXO}/planta-primeiro-pavimento.jpg`,
         alt: "Planta do primeiro pavimento — Multifuncional Eixo Oratório",
+        caption: "Planta do primeiro pavimento",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg",
+        src: `${EIXO}/planta-segundo-pavimento.jpg`,
         alt: "Planta do segundo pavimento — Multifuncional Eixo Oratório",
+        caption: "Planta do segundo pavimento",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg",
+        src: `${EIXO}/planta-pavimento-tipo.jpg`,
         alt: "Planta do pavimento tipo — Multifuncional Eixo Oratório",
+        caption: "Planta do pavimento tipo",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg",
+        src: `${EIXO}/planta-pavimento-tipo-residencial.jpg`,
         alt: "Planta do pavimento tipo residencial — Multifuncional Eixo Oratório",
+        caption: "Planta do pavimento tipo residencial",
       },
       {
-        src: "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg",
+        src: `${EIXO}/legenda-tipologias-apartamento.jpg`,
         alt: "Legenda das tipologias de apartamento — Multifuncional Eixo Oratório",
+        caption: "Legenda das tipologias de apartamento",
       },
       {
-        src: "/images/projects/eixo-oratorio/planta-coberturas.jpg",
+        src: `${EIXO}/planta-coberturas.jpg`,
         alt: "Planta de coberturas — Multifuncional Eixo Oratório",
+        caption: "Planta de coberturas",
       },
       {
-        src: "/images/projects/eixo-oratorio/corte-a-tecnico.jpg",
+        src: `${EIXO}/corte-a-tecnico.jpg`,
         alt: "Corte técnico A — Multifuncional Eixo Oratório",
+        caption: "Corte técnico A",
       },
       {
-        src: "/images/projects/eixo-oratorio/corte-b-tecnico.jpg",
+        src: `${EIXO}/corte-b-tecnico.jpg`,
         alt: "Corte técnico B — Multifuncional Eixo Oratório",
+        caption: "Corte técnico B",
       },
       {
-        src: "/images/projects/eixo-oratorio/elevacao-norte.jpg",
+        src: `${EIXO}/elevacao-norte.jpg`,
         alt: "Elevação norte — Multifuncional Eixo Oratório",
+        caption: "Elevação norte",
       },
       {
-        src: "/images/projects/eixo-oratorio/elevacao-sul.png",
+        src: `${EIXO}/elevacao-sul.png`,
         alt: "Elevação sul — Multifuncional Eixo Oratório",
+        caption: "Elevação sul",
       },
       {
-        src: "/images/projects/eixo-oratorio/elevacao-leste.jpg",
+        src: `${EIXO}/elevacao-leste.jpg`,
         alt: "Elevação leste — Multifuncional Eixo Oratório",
+        caption: "Elevação leste",
       },
       {
-        src: "/images/projects/eixo-oratorio/elevacao-oeste.jpg",
+        src: `${EIXO}/elevacao-oeste.jpg`,
         alt: "Elevação oeste — Multifuncional Eixo Oratório",
+        caption: "Elevação oeste",
       },
     ],
+    cardAuthor: "Trabalho Final de Graduação",
+    cardLabel: "Multifuncional Eixo Oratório",
     order: 1,
   },
   {
@@ -297,81 +373,124 @@ export const projects: Project[] = [
     subtitle: "De quintal ocioso a espaço de convívio, descanso e encontro.",
     shortText: "Reforma residencial em Borda da Mata, MG, com cozinha, estar e lazer integrados.",
     location: "Borda da Mata, MG",
+    // TODO: "projetada por Pedro Braga" contradiz o crédito oficial (autoria
+    // de Nathalia Trotta Arquitetura). Texto novo proposto no PR, aguardando
+    // aprovação antes de trocar.
     metaDescription:
       "Área Gourmet G&J: reforma residencial de 106m² em Borda da Mata, MG, projetada por Pedro Braga, integrando cozinha, estar e lazer em um espaço acolhedor.",
-    heroImage: "/images/projects/area-gourmet-gj/varanda-gourmet-noturna.jpg",
-    heroImageAlt: "Varanda gourmet iluminada à noite, com estrutura metálica e área de estar — Área Gourmet G&J",
-    cardAuthor: "Nathalia Trota Arquitetura",
-    cardAuthorHref: "https://www.nathaliatrottaarquiteta.com.br/",
-    cardLabel: "Área Gourmet G&J — 2026",
+    meta: [
+      { label: "Local", value: "Borda da Mata, MG" },
+      { label: "Escritório", value: "Nathalia Trotta Arquitetura" },
+      { label: "Ano", value: "2026" },
+      { label: "Ferramentas", value: "SketchUp + AutoCAD" },
+    ],
+    hero: {
+      src: `${GJ}/varanda-gourmet-noturna.jpg`,
+      alt: "Varanda gourmet iluminada à noite, com estrutura metálica e área de estar — Área Gourmet G&J",
+    },
+    opening: [
+      {
+        src: `${GJ}/spa-pergolado-noturno.jpg`,
+        alt: "Deck com spa, cadeira suspensa e pergolado metálico iluminados à noite, com a sala de jogos ao fundo",
+      },
+    ],
     sections: [
       {
         title: "O conceito",
         body: "O projeto surgiu da proposta de transformar um quintal pouco utilizado em uma área gourmet voltada ao convívio entre amigos e familiares. A intervenção buscou criar um ambiente confortável e acolhedor, integrando cozinha, estar e lazer em um mesmo espaço, pensado para receber sem perder a sensação de casa.",
-        // Díptico simétrico clássico — confirmado contra referencias-visuais/1.
-        images: {
-          variant: "diptico-simetrico",
-          photos: [
-            "/images/projects/area-gourmet-gj/cozinha-sala-de-jogos.jpg",
-            "/images/projects/area-gourmet-gj/cozinha-ilha-detalhe.jpg",
-          ],
-        },
+        media: [
+          {
+            layout: "pair",
+            images: [
+              {
+                src: `${GJ}/cozinha-ilha-detalhe.jpg`,
+                alt: "Cozinha com ilha em madeira, banquetas pretas e prateleiras iluminadas, com a mesa de bilhar em primeiro plano",
+                focal: "42% 50%",
+              },
+              {
+                src: `${GJ}/cozinha-sala-de-jogos.jpg`,
+                alt: "Área externa com sofá, fogueira e cadeira suspensa diante dos caixilhos pretos que se abrem para a cozinha e a sala de jogos",
+              },
+            ],
+          },
+        ],
       },
       {
         title: "Os materiais",
         body: "A linguagem contemporânea incorpora referências industriais por meio das estruturas metálicas, esquadrias e elementos em preto, equilibradas pela presença da madeira, da vegetação e de uma iluminação predominantemente quente. O paisagismo participa dos ambientes e contribui para tornar o conjunto mais leve e convidativo — mais do que uma nova função para o quintal, um espaço de permanência.",
-        // Era um "díptico" com a mesma foto (ângulos ligeiramente
-        // diferentes) repetida nas duas colunas — mantém só uma ocorrência,
-        // full-bleed, em vez do par.
-        images: {
-          variant: "full-bleed",
-          photos: ["/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg"],
-        },
+        media: [
+          {
+            layout: "full",
+            images: [
+              {
+                src: `${GJ}/lounge-spa-fogueira.jpg`,
+                alt: "Lounge externo com fogueira, spa em deck de madeira e iluminação quente nas paredes",
+              },
+            ],
+          },
+        ],
       },
     ],
-    bigNumbers: [
-      { value: "3", label: "Ambientes integrados" },
-      { value: "106m²", label: "Área reformada" },
-      { value: "2026", label: "Ano do projeto" },
+    numbers: [
+      { value: 3, label: "Ambientes integrados", animate: true },
+      { value: 106, unit: "m²", label: "Área reformada", animate: true },
+      { value: 2026, label: "Ano do projeto", animate: false, plain: true },
     ],
-    authorship: {
-      title: "Arquitetura e Design de Interiores — Pedro Braga",
-      body: "Responsável por todas as etapas do projeto, da concepção à escolha de materiais, buscando equilibrar linguagem industrial e acolhimento no mesmo espaço.",
-    },
+    // TODO: Uso, Área do terreno, CA e TO não existem para este projeto —
+    // as linhas ficam fora da ficha até o Pedro passar os dados.
+    specs: [{ label: "Local", value: "Borda da Mata, MG" }],
     software: { value: "SketchUp + AutoCAD", label: "Modelagem e desenho técnico" },
-    creditLine: {
-      authorName: "Nathalia Trota Arquitetura",
-      authorHref: "https://www.nathaliatrottaarquiteta.com.br/",
+    credits: {
+      office: {
+        name: "Nathalia Trotta Arquitetura",
+        href: "https://www.nathaliatrottaarquiteta.com.br/",
+      },
+      // Texto original do campo de autoria, mantido aqui mas NÃO exibido:
+      // contradiz o crédito oficial do escritório (decisão de out/2026 —
+      // usar só a linha de crédito).
+      // "Arquitetura e Design de Interiores — Pedro Braga" /
+      // "Responsável por todas as etapas do projeto, da concepção à escolha
+      // de materiais, buscando equilibrar linguagem industrial e acolhimento
+      // no mesmo espaço."
     },
-    // Every photo above is already placed via `sections[].images` — this
-    // array is just the technical drawings, trailing after stats/specs.
-    // Corte A was missing entirely (only Corte B had been added) — added
-    // here, before Corte B, per the site-wide rule that Corte A always
-    // precedes Corte B. planta-coberturas.jpg used to be here too, but it
-    // actually belongs to Multifuncional Eixo Oratório (wrong project) —
-    // moved there.
-    gallery: [
+    // Corte A sempre antes do Corte B.
+    drawings: [
       {
-        src: "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg",
+        src: `${GJ}/estudo-croqui-tecnico.jpg`,
         alt: "Estudo em croqui técnico — Área Gourmet G&J",
+        caption: "Estudo em croqui técnico",
       },
       {
-        src: "/images/projects/area-gourmet-gj/planta-baixa.jpg",
+        src: `${GJ}/planta-baixa.jpg`,
         alt: "Planta baixa — Área Gourmet G&J",
+        caption: "Planta baixa",
       },
       {
-        src: "/images/projects/area-gourmet-gj/corte-a-tecnico.png",
+        src: `${GJ}/corte-a-tecnico.png`,
         alt: "Corte técnico A — Área Gourmet G&J",
+        caption: "Corte técnico A",
       },
       {
-        src: "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg",
+        src: `${GJ}/corte-b-tecnico.jpg`,
         alt: "Corte técnico B — Área Gourmet G&J",
+        caption: "Corte técnico B",
       },
     ],
+    cardAuthor: "Nathalia Trotta Arquitetura",
+    cardAuthorHref: "https://www.nathaliatrottaarquiteta.com.br/",
+    cardLabel: "Área Gourmet G&J — 2026",
     order: 2,
   },
 ];
 
+export const sortedProjects = [...projects].sort((a, b) => a.order - b.order);
+
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
+}
+
+/** Próximo projeto na ordem da Home (volta ao primeiro depois do último). */
+export function getNextProject(slug: string): Project {
+  const index = sortedProjects.findIndex((project) => project.slug === slug);
+  return sortedProjects[(index + 1) % sortedProjects.length];
 }
