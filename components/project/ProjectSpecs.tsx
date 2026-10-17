@@ -1,22 +1,65 @@
+import { ReactNode } from "react";
 import { Grid } from "@/components/Grid";
-import type { TechSpec } from "@/data/projects";
+import { FadeIn } from "@/components/motion/FadeIn";
+import type { Project } from "@/data/projects";
 
-/** Optional denser spec sheet — only some projects have one (e.g. a TFG's "Ficha técnica"). */
-export function ProjectSpecs({ specs }: { specs: TechSpec[] }) {
+function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <section className="project-specs py-section-spacing">
-      {/* Estilo provisório — será substituído pelo CSS exportado do Figma */}
-      <Grid>
-        <h2 className="project-specs-title col-span-2 mb-8 text-[24px] leading-[28px] text-ink sm:col-span-6 sm:mb-12 sm:text-section-title">
-          Ficha técnica
-        </h2>
-        <dl className="project-specs-list col-span-2 grid grid-cols-1 gap-x-12 gap-y-6 sm:col-span-6 sm:grid-cols-2">
+    <FadeIn className="grid grid-cols-1 gap-y-space-1 border-t border-rule py-space-3 md:grid-cols-8 md:gap-x-gutter xl:grid-cols-8">
+      <dt className="text-h2 md:col-span-3">{label}</dt>
+      <dd className="max-w-measure text-pretty text-body md:col-span-5">{children}</dd>
+    </FadeIn>
+  );
+}
+
+/**
+ * Ficha técnica em linhas (estilo "Arquitetura Isay Weinfeld / Paisagismo
+ * Rodrigo Oliveira"): rótulo à esquerda, valor à direita, fio de 1px.
+ * Só entram as linhas que existem em data/projects.ts; Ferramentas e
+ * Autoria/Créditos vêm de `software` e `credits`.
+ */
+export function ProjectSpecs({ project }: { project: Project }) {
+  const { specs, software, credits } = project;
+
+  return (
+    <section aria-labelledby="ficha" className="pt-space-7 md:pt-space-8">
+      <Grid className="gap-y-space-4">
+        <FadeIn className="col-span-full xl:col-span-4">
+          <h2 id="ficha" className="text-h2">
+            Ficha técnica
+          </h2>
+        </FadeIn>
+        <dl className="col-span-full border-b border-rule xl:col-span-8 xl:col-start-5">
           {specs.map((spec) => (
-            <div key={spec.label} className="project-spec flex flex-col gap-1 border-t border-ink/10 pt-4">
-              <dt className="project-spec-label text-caption text-muted">{spec.label}</dt>
-              <dd className="project-spec-value text-base leading-[24px] text-ink">{spec.value}</dd>
-            </div>
+            <Row key={spec.label} label={spec.label}>
+              {spec.value}
+            </Row>
           ))}
+          <Row label="Ferramentas">
+            {software.value}
+            <span className="block text-muted">{software.label}</span>
+          </Row>
+          {credits.office ? (
+            <Row label="Créditos">
+              Projeto de autoria de{" "}
+              <a
+                href={credits.office.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline link-underline-static focus-ring"
+              >
+                {credits.office.name}
+              </a>
+              . Modelagem e desenho técnico por Pedro Braga.
+            </Row>
+          ) : (
+            credits.authorship && (
+              <Row label="Autoria">
+                {credits.authorship.title}
+                <span className="block text-muted">{credits.authorship.body}</span>
+              </Row>
+            )
+          )}
         </dl>
       </Grid>
     </section>

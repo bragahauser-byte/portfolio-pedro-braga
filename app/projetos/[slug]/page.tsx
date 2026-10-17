@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { ProjectClosing } from "@/components/project/ProjectClosing";
+import { ProjectDrawings } from "@/components/project/ProjectDrawings";
 import { ProjectHero } from "@/components/project/ProjectHero";
+import { ProjectNumbers } from "@/components/project/ProjectNumbers";
+import { ProjectOpening } from "@/components/project/ProjectOpening";
 import { ProjectSection } from "@/components/project/ProjectSection";
-import { ProjectGalleryImage } from "@/components/project/ProjectGalleryImage";
-import { ProjectStats } from "@/components/project/ProjectStats";
 import { ProjectSpecs } from "@/components/project/ProjectSpecs";
-import { ProjectSoftware } from "@/components/project/ProjectSoftware";
-import { getProjectBySlug, projects } from "@/data/projects";
+import { getNextProject, getProjectBySlug, projects, sortedProjects } from "@/data/projects";
 import { buildMetadata, projectJsonLd } from "@/lib/seo";
 
-// Static export (output: 'export') requires every dynamic route to be
-// pre-generated at build time — this is what makes /projetos/[slug] exist
-// as real static files in /out.
+// Static export: toda rota dinâmica precisa ser gerada no build.
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
@@ -21,86 +20,53 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const project = getProjectBySlug(params.slug);
   if (!project) {
-    // notFound() further down handles the actual 404 render; this just
-    // keeps generateMetadata from throwing on an already-invalid slug.
     return buildMetadata({ path: `/projetos/${params.slug}` });
   }
   return buildMetadata({
     title: `${project.title} — Pedro Braga | Arquiteto e Urbanista`,
     description: project.metaDescription,
     path: `/projetos/${project.slug}`,
+    image: { src: project.hero.src, alt: project.hero.alt },
+    type: "article",
   });
 }
 
-// Groups consecutive photos into rows of up to 2 (a trailing odd photo
-// gets its own row) — used for the technical-drawing tail in `gallery`,
-// which always renders as plain symmetric pairs.
-function chunkIntoPairs<T>(items: T[]): T[][] {
-  const chunks: T[][] = [];
-  for (let i = 0; i < items.length; i += 2) {
-    chunks.push(items.slice(i, i + 2));
-  }
-  return chunks;
-}
-
+/**
+ * Página de projeto, de cima para baixo: hero (título + frase) → abertura
+ * sticky com as imagens mais fortes → seções com composições assimétricas
+ * → plantas e cortes → números → ficha técnica → fechamento escuro com os
+ * outros projetos e o próximo case → contato. Tudo vem de data/projects.ts.
+ */
 export default function ProjectPage({ params }: { params: { slug: string } }) {
   const project = getProjectBySlug(params.slug);
   if (!project) {
     notFound();
   }
 
-  // Trailing photos (plantas/cortes/elevações) not tied to any section —
-  // always plain symmetric pairs, closing out the page after stats/specs.
-  const extraChunks = chunkIntoPairs(project.gallery);
+  const others = sortedProjects.filter((other) => other.slug !== project.slug);
+  const next = getNextProject(project.slug);
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      {/* schema.org/CreativeWork — describes this project specifically and
-          links it back to Pedro Braga as `creator` (see lib/seo.ts). */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(projectJsonLd(project)) }}
       />
-      <Header theme="light" />
+      <Header />
 
       <main>
         <ProjectHero project={project} />
-
-        {project.sections.map((section) => {
-          const photos = section.images?.photos ?? [];
-          return (
-            <div key={section.title}>
-              <ProjectSection section={section} />
-              <ProjectGalleryImage
-                variant={section.images?.variant}
-                images={photos.map((src, photoIndex) => ({
-                  src,
-                  alt: `${project.title} — ${section.title}${photos.length > 1 ? ` (${photoIndex + 1}/${photos.length})` : ""}`,
-                }))}
-              />
-            </div>
-          );
-        })}
-
-        <ProjectStats title="Números do projeto" stats={project.bigNumbers} />
-
-        {project.detailedSpecs && <ProjectSpecs specs={project.detailedSpecs} />}
-
-        {/* Any gallery images beyond what the sections above could pair up with
-            (e.g. plantas/cortes technical drawings) close out the page here.
-            Each already carries its own descriptive alt from data/projects.ts. */}
-        {extraChunks.map((chunk) => (
-          <ProjectGalleryImage key={chunk.map((image) => image.src).join("|")} images={chunk} />
+        <ProjectOpening project={project} />
+        {project.sections.map((section, index) => (
+          <ProjectSection key={section.title} section={section} index={index} />
         ))}
-
-        <ProjectSoftware
-          value={project.software.value}
-          label={project.software.label}
-          creditLine={project.creditLine}
-        />
+        <ProjectDrawings drawings={project.drawings} />
+        <ProjectNumbers numbers={project.numbers} />
+        <ProjectSpecs project={project} />
+        <ProjectClosing others={others} next={next} />
       </main>
 
-      <Footer />
+      <Footer theme="dark" />
     </div>
   );
 }
