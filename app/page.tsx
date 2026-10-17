@@ -3,7 +3,6 @@ import { Footer } from "@/components/Footer";
 import { Grid, TEXT_COLUMN } from "@/components/Grid";
 import { Header } from "@/components/Header";
 import { ProjectFeature } from "@/components/home/ProjectFeature";
-import { ProjectIndex } from "@/components/home/ProjectIndex";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { sortedProjects } from "@/data/projects";
 import { buildMetadata, personJsonLd } from "@/lib/seo";
@@ -42,7 +41,7 @@ export default function HomePage() {
           </Grid>
         </section>
 
-        <section id="projetos" aria-label="Projetos" className="scroll-mt-10">
+        <section id="projetos" aria-label="Projetos" className="scroll-mt-24 pb-20 md:pb-30 xl:pb-40">
           <Grid className="gap-y-20 md:gap-y-30 xl:gap-y-40">
             {sortedProjects.map((project, index) => (
               <ProjectFeature key={project.slug} project={project} index={index} />
@@ -50,7 +49,6 @@ export default function HomePage() {
           </Grid>
         </section>
 
-        <ProjectIndex projects={sortedProjects} />
       </main>
 
       <Footer />

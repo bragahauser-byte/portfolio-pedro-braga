@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Cursor } from "@/components/Cursor";
 import { GridOverlay } from "@/components/dev/GridOverlay";
 import { PageTransition } from "@/components/providers/PageTransition";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -44,7 +43,6 @@ export default function RootLayout({
         </noscript>
         <SmoothScroll />
         <PageTransition>{children}</PageTransition>
-        <Cursor />
         {process.env.NODE_ENV === "development" && <GridOverlay />}
       </body>
     </html>

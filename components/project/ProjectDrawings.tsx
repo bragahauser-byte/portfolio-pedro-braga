@@ -10,8 +10,7 @@ import { Lightbox } from "./Lightbox";
 /**
  * "Plantas e cortes": título na coluna da tipografia; desenhos em grade
  * 2×N (colunas 1–6 / 7–12) sobre off-white, sempre inteiros
- * (object-contain), com legenda 12/16. Clique abre o lightbox; o cursor
- * vira "+".
+ * (object-contain), com legenda 12/16. Clique abre o lightbox.
  */
 export function ProjectDrawings({ drawings }: { drawings: Drawing[] }) {
   const [open, setOpen] = useState<number | null>(null);
@@ -32,7 +31,6 @@ export function ProjectDrawings({ drawings }: { drawings: Drawing[] }) {
             <button
               type="button"
               onClick={() => setOpen(index)}
-              data-cursor="+"
               aria-label={`Ampliar: ${drawing.caption}`}
               className="focus-ring group block w-full text-left"
             >

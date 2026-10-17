@@ -18,7 +18,8 @@ import { DURATION, EASE_EXPO_OUT } from "@/lib/motion";
 import { normalizePathname } from "@/lib/paths";
 import { scrollToElement, scrollToTop } from "./SmoothScroll";
 
-type Phase = "idle" | "covering" | "revealing";
+// "covered": cortina fechada sem animar (saída do Sobre mim, que já é preto).
+type Phase = "idle" | "covering" | "covered" | "revealing";
 type Target = { kind: "push"; href: string } | { kind: "back" };
 
 const TransitionContext = createContext<{
@@ -33,6 +34,7 @@ export function usePageTransition() {
 // Marca que já houve navegação interna nesta aba — o × do Sobre mim só
 // usa history.back() quando há para onde voltar dentro do site.
 const INTERNAL_NAV_KEY = "pb:internal-nav";
+const ABOUT_PATH = "/sobre-mim";
 
 function splitHash(href: string) {
   const [path, hash] = href.split("#");
@@ -59,7 +61,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const lastPathname = useRef(pathname);
 
   const go = useCallback(
-    (target: Target) => {
+    (target: Target, instant = false) => {
       try {
         sessionStorage.setItem(INTERNAL_NAV_KEY, "1");
       } catch {
@@ -71,7 +73,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
         return;
       }
       pending.current = target;
-      setPhase("covering");
+      setPhase(instant ? "covered" : "covering");
     },
     [reducedMotion, router]
   );
@@ -85,10 +87,22 @@ export function PageTransition({ children }: { children: ReactNode }) {
         else if (!hash) scrollToTop();
         return;
       }
+      // O Sobre mim tem a própria cortina preta subindo (AboutView): passar
+      // pela cortina global antes só somava ~1,4s de tela preta parada.
+      if (path === ABOUT_PATH && !hash) {
+        try {
+          sessionStorage.setItem(INTERNAL_NAV_KEY, "1");
+        } catch {
+          // segue sem a marca
+        }
+        scrollToTop();
+        router.push(href);
+        return;
+      }
       pendingHash.current = hash;
       go({ kind: "push", href });
     },
-    [go, pathname]
+    [go, pathname, router]
   );
 
   const back = useCallback(
@@ -99,10 +113,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
       } catch {
         hasInternal = false;
       }
-      if (hasInternal && window.history.length > 1) go({ kind: "back" });
-      else navigate(fallbackHref);
+      // Saindo de uma página preta (Sobre mim) a cortina já "está" fechada:
+      // fecha sem animar e só revela a página de destino.
+      if (hasInternal && window.history.length > 1) go({ kind: "back" }, true);
+      else {
+        pendingHash.current = undefined;
+        go({ kind: "push", href: fallbackHref }, true);
+      }
     },
-    [go, navigate]
+    [go]
   );
 
   // A rota trocou por baixo da cortina → topo da página (ou âncora) e revela.
@@ -123,18 +142,26 @@ export function PageTransition({ children }: { children: ReactNode }) {
     if (!reducedMotion) setPhase("revealing");
   }, [pathname, phase, reducedMotion]);
 
+  function navigatePending() {
+    const target = pending.current;
+    if (!target) return;
+    if (target.kind === "back") router.back();
+    else router.push(target.href);
+  }
+
+  // Cortina fechada na hora: navega no mesmo frame, sem esperar animação.
+  useEffect(() => {
+    if (phase === "covered") navigatePending();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
   function onCurtainComplete() {
-    if (phase === "covering" && pending.current) {
-      const target = pending.current;
-      if (target.kind === "back") router.back();
-      else router.push(target.href);
-    } else if (phase === "revealing") {
-      setPhase("idle");
-    }
+    if (phase === "covering") navigatePending();
+    else if (phase === "revealing") setPhase("idle");
   }
 
   const clipPath =
-    phase === "covering"
+    phase === "covering" || phase === "covered"
       ? "inset(0% 0% 0% 0%)"
       : phase === "revealing"
         ? "inset(0% 0% 100% 0%)"
@@ -149,7 +176,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
         initial={false}
         animate={{ clipPath }}
         transition={
-          phase === "idle" ? { duration: 0 } : { duration: DURATION.curtain, ease: EASE_EXPO_OUT }
+          phase === "idle" || phase === "covered"
+            ? { duration: 0 }
+            : { duration: DURATION.curtain, ease: EASE_EXPO_OUT }
         }
         onAnimationComplete={onCurtainComplete}
         style={{ pointerEvents: phase === "idle" ? "none" : "auto" }}

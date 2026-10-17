@@ -34,7 +34,7 @@ Todo push na `main` dispara `.github/workflows/deploy.yml`, que builda e publica
 
 ```
 /app
-  layout.tsx               fonte, Lenis, cortina de transição, cursor, overlay do grid (dev)
+  layout.tsx               fonte, Lenis, cortina de transição, overlay do grid (dev)
   page.tsx                 Home
   projetos/[slug]/page.tsx página de projeto (gerada para cada item de data/projects.ts)
   sobre-mim/page.tsx       Sobre mim
@@ -42,7 +42,6 @@ Todo push na `main` dispara `.github/workflows/deploy.yml`, que builda e publica
 /components
   Grid.tsx                 grid 12/8/4 colunas (obrigatório em toda página)
   Header.tsx / Footer.tsx
-  Cursor.tsx               cursor "Ver" / "+" (só desktop)
   providers/               SmoothScroll (Lenis) e PageTransition (cortina + TransitionLink)
   motion/                  RevealImage, SplitLines, FadeIn, CountUp
   media/Picture.tsx        <picture> com AVIF/WebP responsivos + width/height reais
