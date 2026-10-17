@@ -51,14 +51,14 @@
     ]
   },
   "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg": {
-    "width": 2000,
-    "height": 1339,
+    "width": 1797,
+    "height": 1288,
     "base": "/images/optimized/area-gourmet-gj/lounge-spa-fogueira",
     "widths": [
       640,
       1080,
       1600,
-      2000
+      1797
     ]
   },
   "/images/projects/area-gourmet-gj/planta-baixa.jpg": {
@@ -199,14 +199,14 @@
     ]
   },
   "/images/projects/eixo-oratorio/fachadas-comparativo.jpg": {
-    "width": 2000,
+    "width": 1784,
     "height": 1249,
     "base": "/images/optimized/eixo-oratorio/fachadas-comparativo",
     "widths": [
       640,
       1080,
       1600,
-      2000
+      1784
     ]
   },
   "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg": {
@@ -318,36 +318,35 @@
     ]
   },
   "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg": {
-    "width": 2000,
-    "height": 1339,
+    "width": 1797,
+    "height": 1290,
     "base": "/images/optimized/eixo-oratorio/praca-acesso-paisagismo",
     "widths": [
       640,
       1080,
       1600,
-      2000
+      1797
     ]
   },
   "/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg": {
-    "width": 2000,
+    "width": 1796,
     "height": 1196,
     "base": "/images/optimized/eixo-oratorio/vista-aerea-metro-alternativa",
     "widths": [
       640,
       1080,
       1600,
-      2000
+      1796
     ]
   },
   "/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg": {
-    "width": 2000,
+    "width": 1190,
     "height": 1249,
     "base": "/images/optimized/eixo-oratorio/vista-aerea-torres-contexto",
     "widths": [
       640,
       1080,
-      1600,
-      2000
+      1190
     ]
   },
   "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg": {
