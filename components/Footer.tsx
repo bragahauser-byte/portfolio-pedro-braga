@@ -1,11 +1,11 @@
-import { FadeIn } from "./motion/FadeIn";
 import { CONTACT_LINKS, EMAIL } from "@/lib/contact";
-import { Grid } from "./Grid";
+import { Grid, TEXT_COLUMN, TEXT_COLUMN_WIDE } from "./Grid";
+import { FadeIn } from "./motion/FadeIn";
 
 /**
- * Rodapé de contato (âncora #contato do header): o e-mail grande e
- * clicável, e LinkedIn / Instagram em linha. `theme="dark"` continua o
- * bloco preto de fechamento das páginas de projeto.
+ * Rodapé de contato (âncora #contato do header), na coluna da tipografia:
+ * rótulo cinza, e-mail grande clicável e LinkedIn / Instagram.
+ * `theme="dark"` continua o bloco preto das páginas de projeto.
  */
 export function Footer({ theme = "light" }: { theme?: "light" | "dark" }) {
   const dark = theme === "dark";
@@ -14,31 +14,32 @@ export function Footer({ theme = "light" }: { theme?: "light" | "dark" }) {
   return (
     <footer
       id="contato"
-      className={`w-full pb-space-4 pt-space-7 md:pt-space-8 ${dark ? "theme-dark bg-night text-paper" : "bg-paper text-ink"}`}
+      className={`w-full pb-10 pt-20 md:pt-30 xl:pt-40 ${dark ? "theme-dark bg-night text-paper" : "bg-paper text-ink"}`}
     >
       <Grid>
-        <FadeIn className="col-span-full">
-          <h2 className="text-caption text-muted">Contato</h2>
+        <FadeIn className={TEXT_COLUMN_WIDE}>
+          <h2 className="text-14 text-muted">Contato</h2>
           <a
             href={`mailto:${EMAIL}`}
-            className="link-underline focus-ring mt-space-2 inline-block break-all text-h1 font-light"
+            className="link-underline focus-ring mt-4 inline-block break-all text-24 md:text-40-text"
           >
             {EMAIL}
           </a>
         </FadeIn>
-        <div className={`col-span-full mt-space-6 flex flex-wrap items-center gap-x-space-4 gap-y-space-1 border-t ${dark ? "border-white/15" : "border-rule"} pt-space-3 md:mt-space-7`}>
+        <ul className={`${TEXT_COLUMN} mt-16 flex flex-wrap gap-x-8 gap-y-2 md:mt-24`}>
           {social.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-underline focus-ring tap-target text-nav text-muted"
-            >
-              {item.label}
-            </a>
+            <li key={item.label}>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline focus-ring tap-target text-14 text-muted"
+              >
+                {item.label}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       </Grid>
     </footer>
   );

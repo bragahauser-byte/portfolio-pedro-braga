@@ -4,22 +4,19 @@
 
 :root {
   /* Grid — única fonte de verdade para margem, gutter e nº de colunas.
-     Mobile: 4 colunas / 20px / 14px. */
+     Mobile: 4 colunas / margem 20px / gutter 16px. */
   --grid-cols: 4;
   --grid-margin: 20px;
-  --grid-gutter: 14px;
+  --grid-gutter: 16px;
 
-  /* #707070 dá 4.9:1 sobre branco (WCAG AA pede 4.5:1). O #8A8A8A da
-     referência só passa sobre o preto, então fica restrito ao .theme-dark. */
-  --color-muted: #707070;
-  --color-focus: #0a0a0a;
+  --color-focus: #000000;
   --ease-expo-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (min-width: 768px) {
   :root {
     --grid-cols: 8;
-    --grid-margin: 32px;
+    --grid-margin: 40px;
     --grid-gutter: 20px;
   }
 }
@@ -27,14 +24,12 @@
 @media (min-width: 1280px) {
   :root {
     --grid-cols: 12;
-    --grid-margin: 48px;
+    --grid-margin: 80px; /* medido na referência: 80px a 1440px */
   }
 }
 
-/* Telas escuras (Sobre mim, fechamento do projeto) — #8A8A8A sobre #000
-   dá 6.1:1. */
+/* Telas escuras (Sobre mim, fechamento do projeto). */
 .theme-dark {
-  --color-muted: #8a8a8a;
   --color-focus: #ffffff;
 }
 
@@ -142,7 +137,6 @@ html.lenis body {
       margin-left: 0;
       margin-right: 0;
       width: 100%;
-      border-radius: 6px;
     }
   }
 

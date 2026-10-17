@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { MouseEvent, useRef, useState } from "react";
-import { Grid } from "@/components/Grid";
+import { Grid, TEXT_COLUMN, TEXT_COLUMN_WIDE } from "@/components/Grid";
 import { Picture } from "@/components/media/Picture";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { TransitionLink } from "@/components/providers/PageTransition";
@@ -10,9 +10,9 @@ import type { Project } from "@/data/projects";
 import { EASE_EXPO_OUT } from "@/lib/motion";
 
 /**
- * Índice no estilo Paravela: uma linha por projeto (Nome — Tipo, em
- * colunas, com fio). Em desktop, passar o mouse mostra uma prévia da capa
- * que segue o cursor.
+ * Índice no estilo Paravela, na coluna da tipografia: uma linha por projeto
+ * (nome 24/32, tipo 14/20 em cinza) com fio #EEE. Em desktop, passar o
+ * mouse mostra uma prévia da capa que segue o cursor.
  */
 export function ProjectIndex({ projects }: { projects: Project[] }) {
   const [hovered, setHovered] = useState<Project | null>(null);
@@ -26,28 +26,30 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
   }
 
   return (
-    <section aria-labelledby="indice" className="pt-space-7 md:pt-space-8">
+    <section aria-labelledby="indice" className="pt-20 md:pt-30 xl:pt-40">
       <Grid>
-        <FadeIn className="col-span-full">
-          <h2 id="indice" className="text-caption text-muted">
+        <FadeIn className={TEXT_COLUMN}>
+          <h2 id="indice" className="text-14 text-muted">
             Projetos
           </h2>
         </FadeIn>
-        <ul className="col-span-full mt-space-2 border-b border-rule" onMouseMove={onMove} onMouseLeave={() => setHovered(null)}>
+        <ul
+          className={`${TEXT_COLUMN_WIDE} mt-4 border-b border-rule`}
+          onMouseMove={onMove}
+          onMouseLeave={() => setHovered(null)}
+        >
           {projects.map((project) => (
             <li key={project.slug} className="border-t border-rule">
               <TransitionLink
                 href={`/projetos/${project.slug}`}
                 onMouseEnter={() => setHovered(project)}
                 onFocus={() => setHovered(null)}
-                className="group focus-ring grid grid-cols-4 gap-x-gutter py-space-2 md:grid-cols-8 xl:grid-cols-12"
+                className="group focus-ring block py-6"
               >
-                <span className="col-span-4 text-lead md:col-span-4 xl:col-span-6">
+                <span className="block text-20 md:text-24">
                   <span className="link-underline">{project.title}</span>
                 </span>
-                <span className="col-span-4 self-center text-nav text-muted md:col-span-4 xl:col-span-6">
-                  {project.cardAuthor}
-                </span>
+                <span className="block text-14 text-muted">{project.cardAuthor}</span>
               </TransitionLink>
             </li>
           ))}
@@ -63,7 +65,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
           {hovered && (
             <motion.div
               key={hovered.slug}
-              className="w-[320px] overflow-hidden rounded-image"
+              className="w-[320px] overflow-hidden"
               initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}

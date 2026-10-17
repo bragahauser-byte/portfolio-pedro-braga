@@ -1,10 +1,20 @@
 import type { Config } from "tailwindcss";
 
-// Design tokens do redesign editorial (referências: Paravela / Idea Zarvos).
-// Grid: 12 colunas ≥1280px (margem 48px, gutter 20px), 8 colunas no tablet
-// (margem 32px), 4 no mobile (margem 20px, gutter 14px) — os valores vivem
-// como CSS vars em app/globals.css (--grid-*), lidos pelo Grid.tsx e pelo
-// overlay de conferência (tecla G em dev).
+// Design tokens medidos nas referências da Idea Zarvos (referencia de projeto/).
+//
+// Grid: 12 colunas ≥1280px (margem 80px, gutter 20px), 8 no tablet
+// (margem 40px), 4 no mobile (margem 20px, gutter 16px). Valores em CSS vars
+// (app/globals.css, --grid-*), lidos pelo Grid.tsx e pelo overlay (tecla G).
+//
+// Regra da tipografia: todo texto começa SEMPRE na mesma coluna — a 5 no
+// desktop, a 3 no tablet, a margem no mobile (ver TEXT_COLUMN em Grid.tsx).
+// Só as imagens mudam de posição.
+//
+// Tamanhos: 12, 14, 16 e daí em múltiplos de 4; entrelinhas e espaçamentos
+// sempre em múltiplos de 4 (a escala padrão do Tailwind já é de 4 em 4px).
+const tight = "-0.02em";
+const tighter = "-0.03em";
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -15,49 +25,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0A0A0A", // texto principal sobre fundo claro
+        ink: "#000000", // texto (medido: #000000)
         paper: "#FFFFFF",
-        night: "#000000", // seções escuras (Sobre mim, fechamento do projeto)
-        // Cinza secundário via CSS var — muda com .theme-dark para manter
-        // contraste AA nos dois fundos (ver globals.css).
-        muted: "var(--color-muted)",
-        rule: "#E6E6E6", // fio de 1px da ficha técnica
-        drawing: "#F4F3F0", // fundo off-white dos desenhos técnicos
+        night: "#000000", // seções escuras
+        muted: "#999999", // texto secundário (medido: #999999)
+        rule: "#EEEEEE", // fios da ficha técnica (medido: #EEEEEE)
+        drawing: "#F4F3F0", // fundo dos desenhos técnicos
       },
       fontFamily: {
         sans: ["var(--font-helvetica-now)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
       },
       fontSize: {
-        // [fontSize, { lineHeight, letterSpacing }] — clamp() faz a escala
-        // fluida entre mobile e desktop sem um breakpoint por token.
-        display: ["clamp(56px, 7.2vw, 104px)", { lineHeight: "1", letterSpacing: "-0.03em" }],
-        h1: ["clamp(40px, 4.6vw, 68px)", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
-        h2: ["clamp(20px, 1.5vw, 22px)", { lineHeight: "1.3", letterSpacing: "-0.01em" }],
-        lead: ["clamp(22px, 1.95vw, 28px)", { lineHeight: "1.4", letterSpacing: "-0.01em" }],
-        body: ["16px", { lineHeight: "26px" }],
-        caption: ["12px", { lineHeight: "1.4", letterSpacing: "0.01em" }],
-        nav: ["16px", { lineHeight: "24px" }],
+        // [tamanho, { entrelinha, tracking }] — nome = tamanho em px.
+        12: ["12px", { lineHeight: "16px" }],
+        14: ["14px", { lineHeight: "20px" }],
+        16: ["16px", { lineHeight: "24px" }],
+        "16-tight": ["16px", { lineHeight: "20px" }],
+        20: ["20px", { lineHeight: "24px" }],
+        "20-loose": ["20px", { lineHeight: "28px" }],
+        24: ["24px", { lineHeight: "32px" }],
+        28: ["28px", { lineHeight: "40px" }],
+        32: ["32px", { lineHeight: "40px" }],
+        40: ["40px", { lineHeight: "44px", letterSpacing: tight }],
+        "40-text": ["40px", { lineHeight: "48px" }],
+        56: ["56px", { lineHeight: "56px", letterSpacing: tight }],
+        80: ["80px", { lineHeight: "80px", letterSpacing: tighter }],
+        120: ["120px", { lineHeight: "120px", letterSpacing: tighter }],
       },
       spacing: {
-        // Ritmo vertical: 8 / 16 / 24 / 40 / 64 / 96 / 160 / 240
-        "space-1": "8px",
-        "space-2": "16px",
-        "space-3": "24px",
-        "space-4": "40px",
-        "space-5": "64px",
-        "space-6": "96px",
-        "space-7": "160px",
-        "space-8": "240px",
+        // complementos da escala de 4px do Tailwind
+        30: "120px",
+        45: "180px",
         "grid-margin": "var(--grid-margin)",
         gutter: "var(--grid-gutter)",
-        "stack-gap": "12px", // gap entre as imagens empilhadas da abertura
       },
       borderRadius: {
-        image: "6px",
+        image: "0px", // a referência usa cantos retos
       },
       maxWidth: {
         site: "1920px",
-        measure: "65ch",
+        // largura máxima medida das linhas de texto da referência (~680px)
+        text: "680px",
+        small: "480px",
       },
       transitionTimingFunction: {
         "expo-out": "cubic-bezier(0.22, 1, 0.36, 1)",

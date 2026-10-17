@@ -32,8 +32,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 /**
- * Página de projeto, de cima para baixo: hero (título + frase) → abertura
- * sticky com as imagens mais fortes → seções com composições assimétricas
+ * Página de projeto, de cima para baixo: hero (título + frase) → imagens
+ * de abertura → seções com composições assimétricas
  * → plantas e cortes → números → ficha técnica → fechamento escuro com os
  * outros projetos e o próximo case → contato. Tudo vem de data/projects.ts.
  */
@@ -57,8 +57,8 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       <main>
         <ProjectHero project={project} />
         <ProjectOpening project={project} />
-        {project.sections.map((section, index) => (
-          <ProjectSection key={section.title} section={section} index={index} />
+        {project.sections.map((section) => (
+          <ProjectSection key={section.title} section={section} />
         ))}
         <ProjectDrawings drawings={project.drawings} />
         <ProjectNumbers numbers={project.numbers} />

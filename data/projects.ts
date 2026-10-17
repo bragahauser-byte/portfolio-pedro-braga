@@ -13,10 +13,9 @@
  * Como as imagens de uma seção se compõem no grid de 12 colunas:
  * - "full": largura total, proporção natural da imagem (nunca corta).
  * - "panorama": largura total, recorte 21:9 (só para fotos/renders).
- * - "pair": duas imagens lado a lado e assimétricas — vertical 4:5 nas
- *   colunas 1–5 e horizontal 3:2 nas colunas 6–12, alinhadas pela base.
- * - "offset-left": horizontal nas colunas 1–7, proporção natural.
- * - "offset-right": vertical 4:5 nas colunas 7–12 (recorte com `focal`).
+ * - "pair": duas imagens lado a lado, 3:2, colunas 1–6 e 7–12.
+ * - "offset-left": horizontal nas colunas 1–8, proporção natural.
+ * - "offset-right": vertical 3:4 nas colunas 7–12 (recorte com `focal`).
  * No mobile tudo vira uma coluna, de borda a borda.
  */
 export type ImageLayout = "full" | "pair" | "offset-left" | "offset-right" | "panorama";
@@ -85,14 +84,12 @@ export type Project = {
   title: string;
   /** Frase de abertura, em lead sob o título. */
   subtitle: string;
-  /** Linha factual curta, em cinza (coluna sticky da abertura). */
+  /** Linha factual curta, em cinza, sob a frase de abertura. */
   shortText: string;
   /** "Cidade, UF" — também usado no JSON-LD (lib/seo.ts). */
   location: string;
   /** Meta description da página (~150–160 caracteres). */
   metaDescription: string;
-  /** Metadados da coluna sticky da abertura. */
-  meta: Spec[];
   /** Capa: card da Home, primeira imagem da abertura e imagem OG. */
   hero: ProjectImage;
   /** Demais imagens fortes empilhadas na abertura, depois da capa. */
@@ -127,14 +124,7 @@ export const projects: Project[] = [
     location: "São Paulo, SP",
     metaDescription:
       "Multifuncional Eixo Oratório: Trabalho Final de Graduação de Pedro Braga na zona leste de São Paulo, unindo metrô, comércio e moradia numa praça central.",
-    // TODO: ano do TFG não consta nos dados — confirmar com o Pedro para
-    // incluir um item "Ano" aqui.
-    meta: [
-      { label: "Local", value: "São Paulo, SP" },
-      { label: "Tipo", value: "Trabalho Final de Graduação" },
-      { label: "Uso", value: "Misto" },
-      { label: "Ferramentas", value: "SketchUp + AutoCAD" },
-    ],
+    // TODO: ano do TFG não consta nos dados — confirmar com o Pedro.
     hero: {
       src: `${EIXO}/fachada-capa-conjunto-aereo.jpg`,
       alt: "Vista aérea da fachada do conjunto do Multifuncional Eixo Oratório, com as torres residenciais e comerciais junto à Estação Oratório",
@@ -378,12 +368,6 @@ export const projects: Project[] = [
     // aprovação antes de trocar.
     metaDescription:
       "Área Gourmet G&J: reforma residencial de 106m² em Borda da Mata, MG, projetada por Pedro Braga, integrando cozinha, estar e lazer em um espaço acolhedor.",
-    meta: [
-      { label: "Local", value: "Borda da Mata, MG" },
-      { label: "Escritório", value: "Nathalia Trotta Arquitetura" },
-      { label: "Ano", value: "2026" },
-      { label: "Ferramentas", value: "SketchUp + AutoCAD" },
-    ],
     hero: {
       src: `${GJ}/varanda-gourmet-noturna.jpg`,
       alt: "Varanda gourmet iluminada à noite, com estrutura metálica e área de estar — Área Gourmet G&J",

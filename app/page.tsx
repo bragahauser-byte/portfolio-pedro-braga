@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
-import { Grid } from "@/components/Grid";
+import { Grid, TEXT_COLUMN } from "@/components/Grid";
 import { Header } from "@/components/Header";
 import { ProjectFeature } from "@/components/home/ProjectFeature";
 import { ProjectIndex } from "@/components/home/ProjectIndex";
@@ -23,10 +23,10 @@ export default function HomePage() {
 
       <main>
         {/* Frase de apresentação — o <h1> da página. */}
-        <section className="pb-space-6 pt-space-7 md:pb-space-7 xl:pt-space-8">
+        <section className="pb-20 pt-20 md:pb-30 md:pt-24 xl:pb-40 xl:pt-28">
           <Grid>
-            <FadeIn immediate delay={0.1} className="col-span-full md:col-span-6 xl:col-span-6">
-              <h1 className="text-pretty text-lead">
+            <FadeIn immediate delay={0.1} className={TEXT_COLUMN}>
+              <h1 className="max-w-text text-pretty text-24 md:text-32 xl:text-40-text">
                 Sou Pedro Braga, Arquiteto e Urbanista brasileiro, natural de São Paulo – SP, formado pela{" "}
                 <a
                   href="https://portal.fmu.br/"
@@ -42,8 +42,8 @@ export default function HomePage() {
           </Grid>
         </section>
 
-        <section id="projetos" aria-label="Projetos" className="scroll-mt-space-4">
-          <Grid className="gap-y-space-6 md:gap-y-space-7">
+        <section id="projetos" aria-label="Projetos" className="scroll-mt-10">
+          <Grid className="gap-y-20 md:gap-y-30 xl:gap-y-40">
             {sortedProjects.map((project, index) => (
               <ProjectFeature key={project.slug} project={project} index={index} />
             ))}

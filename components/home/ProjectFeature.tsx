@@ -2,9 +2,10 @@ import { RevealImage } from "@/components/motion/RevealImage";
 import { TransitionLink } from "@/components/providers/PageTransition";
 import type { Project } from "@/data/projects";
 
-// Ritmo da lista: o primeiro projeto ocupa as 12 colunas, os seguintes
-// alternam entre deslocado à direita (9 colunas) e largura total.
-const POSITIONS = ["col-span-full", "col-span-full md:col-span-7 md:col-start-2 xl:col-span-9 xl:col-start-4"];
+// Imagens são as únicas peças que mudam de lugar no grid: o primeiro
+// projeto ocupa as 12 colunas, os seguintes alternam entre colunas 5–12
+// (alinhado à coluna da tipografia) e largura total.
+const POSITIONS = ["col-span-full", "col-span-full md:col-span-6 md:col-start-3 xl:col-span-8 xl:col-start-5"];
 
 /**
  * Projeto na Home: imagem grande + legenda curta (autor/contexto em preto,
@@ -30,14 +31,14 @@ export function ProjectFeature({ project, index }: { project: Project; index: nu
               focal={project.hero.focal}
               priority={index === 0}
               parallax={index > 0}
-              sizes="(min-width: 768px) calc(100vw - 64px), 100vw"
-              className="max-md:rounded-none"
+              sizes="(min-width: 768px) calc(100vw - 80px), 100vw"
+              className=""
             />
           </span>
         </span>
       </TransitionLink>
 
-      <p className="mt-space-2 flex flex-wrap items-baseline gap-x-space-3 gap-y-space-1 text-nav">
+      <p className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-1 text-14">
         {project.cardAuthorHref ? (
           <a
             href={project.cardAuthorHref}

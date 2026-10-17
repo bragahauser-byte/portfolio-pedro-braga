@@ -7,13 +7,10 @@ import { PageTransition } from "@/components/providers/PageTransition";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { buildMetadata, SITE_URL } from "@/lib/seo";
 
-// Helvetica Now Display — só os dois pesos usados no site (Light nos
-// números/títulos grandes, Regular no resto).
+// Helvetica Now Display Regular — a referência usa um peso só; a
+// hierarquia vem de tamanho e espaço, não de negrito.
 const helveticaNow = localFont({
-  src: [
-    { path: "./fonts/HelveticaNowDisplay-Light.woff2", weight: "300", style: "normal" },
-    { path: "./fonts/HelveticaNowDisplay-Regular.woff2", weight: "400", style: "normal" },
-  ],
+  src: [{ path: "./fonts/HelveticaNowDisplay-Regular.woff2", weight: "400", style: "normal" }],
   variable: "--font-helvetica-now",
   display: "swap",
   preload: true,

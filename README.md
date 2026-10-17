@@ -12,7 +12,7 @@ da fotografia.
 - [Tailwind CSS](https://tailwindcss.com/): tokens de tipografia, cor e espaçamento em `tailwind.config.ts`
 - [Framer Motion](https://www.framer.com/motion/): reveals, parallax, count-up e cortina entre páginas
 - [Lenis](https://lenis.darkroom.engineering/): smooth scroll (desligado com `prefers-reduced-motion`)
-- Helvetica Now Display (Light e Regular) via `next/font/local`, em `app/fonts/`
+- Helvetica Now Display Regular via `next/font/local`, em `app/fonts/`
 - [sharp](https://sharp.pixelplumbing.com/) (dev): gera as imagens responsivas
 
 ## Rodando localmente
@@ -65,12 +65,18 @@ Sempre `<Grid>` (ou `<GridMargin>`) de `@/components/Grid`, nunca margens hardco
 
 | Tela      | Colunas | Margem | Gutter |
 | --------- | ------- | ------ | ------ |
-| ≥ 1280px  | 12      | 48px   | 20px   |
-| 768–1279  | 8       | 32px   | 20px   |
-| < 768px   | 4       | 20px   | 14px   |
+| ≥ 1280px  | 12      | 80px   | 20px   |
+| 768–1279  | 8       | 40px   | 20px   |
+| < 768px   | 4       | 20px   | 16px   |
 
-Ritmo vertical: `space-1` a `space-8` = 8 / 16 / 24 / 40 / 64 / 96 / 160 / 240px.
-A base antiga de 6 colunas equivale a spans de 2 no desktop.
+**Regra da tipografia:** todo texto começa sempre na mesma coluna — a 5 no desktop,
+a 3 no tablet, a margem no mobile (`TEXT_COLUMN` / `TEXT_COLUMN_WIDE` em
+`components/Grid.tsx`). Só as imagens mudam de posição. Valores medidos nas
+referências da Idea Zarvos.
+
+**Tamanhos:** 12, 14, 16, 20, 24, 28, 32, 40, 56, 80 e 120px (classes `text-12`…`text-120`),
+um peso só (Regular). Entrelinhas e espaçamentos sempre em múltiplos de 4.
+**Cores:** texto #000, secundário #999, fios #EEE.
 
 ## Adicionando um projeto
 
@@ -93,4 +99,4 @@ Os `TODO` no código marcam informação que falta:
 - Ano do TFG (para os metadados da abertura).
 - Uso, Área do terreno, CA e TO da Área Gourmet G&J (essas linhas ficam fora da ficha até lá).
 - Meta description do G&J (texto novo aguardando aprovação).
-- Subtítulo do bloco "Outros projetos" e foto/croqui da coluna esquerda do Sobre mim.
+- Subtítulo do bloco "Outros projetos" e foto/croqui do Sobre mim.

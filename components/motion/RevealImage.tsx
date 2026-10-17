@@ -71,7 +71,7 @@ export function RevealImage({
   return (
     <div
       ref={ref}
-      className={`relative overflow-hidden rounded-image bg-[#ECEBE8] ${className}`}
+      className={`relative overflow-hidden bg-[#ECEBE8] ${className}`}
       style={{ aspectRatio: ratio }}
       data-cursor={cursor}
     >

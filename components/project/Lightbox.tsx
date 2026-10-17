@@ -116,7 +116,7 @@ export function Lightbox({
 
   const fade = { duration: reducedMotion ? DURATION.reduced : 0.5, ease: EASE_EXPO_OUT };
   const buttonClass =
-    "focus-ring flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-nav text-ink transition-colors hover:bg-ink/5";
+    "focus-ring flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-14 text-ink transition-colors hover:bg-ink/5";
 
   if (!mounted) return null;
 
@@ -135,8 +135,8 @@ export function Lightbox({
           exit={{ opacity: 0 }}
           transition={fade}
         >
-          <div className="site-grid shrink-0 items-center py-space-2">
-            <p className="col-span-2 text-caption text-muted tnum md:col-span-4 xl:col-span-6" aria-live="polite">
+          <div className="site-grid shrink-0 items-center py-4">
+            <p className="col-span-2 text-12 text-muted tnum md:col-span-4 xl:col-span-6" aria-live="polite">
               {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
             </p>
             <div className="col-span-2 flex justify-end md:col-span-4 xl:col-span-6">
@@ -182,9 +182,9 @@ export function Lightbox({
             </AnimatePresence>
           </div>
 
-          <div className="site-grid shrink-0 items-center py-space-2">
-            <p className="col-span-full text-caption md:col-span-4 xl:col-span-6">{item.caption}</p>
-            <div className="col-span-full flex justify-end gap-space-1 md:col-span-4 xl:col-span-6">
+          <div className="site-grid shrink-0 items-center py-4">
+            <p className="col-span-full text-14 md:col-span-4 xl:col-span-6">{item.caption}</p>
+            <div className="col-span-full flex justify-end gap-2 md:col-span-4 xl:col-span-6">
               <button type="button" onClick={() => setZoomed((z) => !z)} className={buttonClass}>
                 {zoomed ? "Reduzir" : "Ampliar"}
               </button>

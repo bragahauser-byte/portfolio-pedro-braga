@@ -31,6 +31,16 @@ export function Grid({
   );
 }
 
+/**
+ * Coluna da tipografia — TODO texto do site começa aqui, sempre no mesmo
+ * lugar (coluna 5 no desktop, 3 no tablet, margem no mobile), como nas
+ * referências da Idea Zarvos. Só as imagens mudam de posição.
+ * - TEXT_COLUMN: parágrafos e blocos de texto (até 7 colunas).
+ * - TEXT_COLUMN_WIDE: títulos grandes e listas (até a margem direita).
+ */
+export const TEXT_COLUMN = "col-span-full md:col-start-3 md:col-span-6 xl:col-start-5 xl:col-span-7";
+export const TEXT_COLUMN_WIDE = "col-span-full md:col-start-3 md:col-span-6 xl:col-start-5 xl:col-span-8";
+
 /** Só as margens laterais do grid, sem colunas. */
 export function GridMargin({
   children,

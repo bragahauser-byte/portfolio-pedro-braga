@@ -61,7 +61,7 @@ export function Cursor() {
       className="pointer-events-none fixed left-0 top-0 z-[250]"
     >
       <div
-        className={`flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-nav transition-[transform,opacity] duration-500 ease-expo-out motion-reduce:transition-none ${
+        className={`flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-14 transition-[transform,opacity] duration-500 ease-expo-out motion-reduce:transition-none ${
           dark ? "bg-paper text-ink" : "bg-ink text-paper"
         } ${label ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
       >
