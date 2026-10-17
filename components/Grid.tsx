@@ -1,14 +1,18 @@
 import { ElementType, HTMLAttributes, ReactNode } from "react";
 
 /**
- * Site-wide grid: 80px side margin / 6 columns / 20px gutter on desktop
- * (Figma spec). Collapses to a 16px margin / 2 columns / 16px gutter on
- * small screens, preserving the same relative proportions.
+ * Grid do site: 12 colunas ≥1280px (margem 48px, gutter 20px), 8 no
+ * tablet (margem 32px) e 4 no mobile (margem 20px, gutter 14px). Os
+ * valores vêm das CSS vars --grid-* em app/globals.css.
  *
- * Every page and project component MUST use this instead of hardcoding
- * margins, so new project pages stay pixel-consistent with Home/Sobre mim.
- * Images are the one deliberate exception: apply `.mobile-bleed` (globals.css)
- * to a grid item's image wrapper to run it edge-to-edge on mobile instead.
+ * Toda página e componente DEVE usar este grid em vez de margens
+ * hardcoded. Os spans são escritos por breakpoint, ex.:
+ * `col-span-4 md:col-span-6 xl:col-span-5 xl:col-start-5`.
+ * Compatibilidade com a base antiga de 6 colunas: cada coluna antiga =
+ * span 2 no desktop (col-span-3 de 6 → xl:col-span-6 de 12).
+ *
+ * Exceção deliberada: `.mobile-bleed` (globals.css) faz uma imagem correr
+ * de borda a borda no mobile.
  */
 export function Grid({
   children,
@@ -21,28 +25,23 @@ export function Grid({
   as?: ElementType;
 } & HTMLAttributes<HTMLElement>) {
   return (
-    <Tag
-      className={`mx-auto grid w-full max-w-site grid-cols-2 gap-x-gutter-sm px-grid-margin-sm sm:grid-cols-6 sm:gap-x-gutter sm:px-grid-margin ${className}`}
-      {...rest}
-    >
+    <Tag className={`site-grid ${className}`} {...rest}>
       {children}
     </Tag>
   );
 }
 
-/** Thin wrapper for content that only needs the side margins, no column grid. */
+/** Só as margens laterais do grid, sem colunas. */
 export function GridMargin({
   children,
   className = "",
+  as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
+  as?: ElementType;
 }) {
   return (
-    <div
-      className={`mx-auto w-full max-w-site px-grid-margin-sm sm:px-grid-margin ${className}`}
-    >
-      {children}
-    </div>
+    <Tag className={`mx-auto w-full max-w-site px-grid-margin ${className}`}>{children}</Tag>
   );
 }
