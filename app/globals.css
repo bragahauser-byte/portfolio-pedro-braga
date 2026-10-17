@@ -175,9 +175,3 @@ html.lenis body {
     animation: none !important;
   }
 }
-
-/* Cursor customizado (components/Cursor.tsx): esconde o nativo só onde o
-   rótulo "Ver" / "+" aparece. */
-.has-cursor [data-cursor] {
-  cursor: none;
-}

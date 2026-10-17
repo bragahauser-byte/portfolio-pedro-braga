@@ -26,7 +26,6 @@ export function RevealImage({
   priority = false,
   parallax = false,
   className = "",
-  cursor,
 }: {
   src: string;
   alt: string;
@@ -36,8 +35,6 @@ export function RevealImage({
   priority?: boolean;
   parallax?: boolean;
   className?: string;
-  /** Rótulo do cursor customizado sobre esta imagem. */
-  cursor?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -73,7 +70,6 @@ export function RevealImage({
       ref={ref}
       className={`relative overflow-hidden bg-[#ECEBE8] ${className}`}
       style={{ aspectRatio: ratio }}
-      data-cursor={cursor}
     >
       <motion.div
         data-motion

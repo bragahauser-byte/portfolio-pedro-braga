@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Grid, TEXT_COLUMN } from "@/components/Grid";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { usePageTransition } from "@/components/providers/PageTransition";
-import { CONTACT_LINKS } from "@/lib/contact";
+import { Footer } from "@/components/Footer";
 import { DURATION, EASE_EXPO_OUT } from "@/lib/motion";
 
 const META = [
@@ -19,8 +19,8 @@ const META = [
 /**
  * Sobre mim na linguagem do overlay "About" da Paravela: fundo preto que
  * sobe como cortina (clip-path de baixo para cima), metadados em três
- * colunas no topo (faixa do header), × para voltar. O texto (28/40) e os
- * links seguem a coluna da tipografia do site inteiro.
+ * colunas no topo (faixa do header), × para voltar. O texto (28/40) segue
+ * a coluna da tipografia; o rodapé é o mesmo do site inteiro.
  */
 export function AboutView({ paragraphs }: { paragraphs: string[] }) {
   const { back } = usePageTransition();
@@ -88,24 +88,9 @@ export function AboutView({ paragraphs }: { paragraphs: string[] }) {
         </Grid>
       </main>
 
-      <footer className="pb-10 pt-20 md:pt-30 xl:pt-40">
-        <Grid>
-          <ul className={`${TEXT_COLUMN} flex flex-wrap gap-x-8 gap-y-2 text-16`}>
-            {CONTACT_LINKS.map((item) => (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  target={item.href.startsWith("http") ? "_blank" : undefined}
-                  rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="link-underline link-underline-static focus-ring tap-target"
-                >
-                  {item.label === "Email" ? item.href.replace("mailto:", "") : item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Grid>
-      </footer>
+      <div className="pt-20 md:pt-30 xl:pt-40">
+        <Footer theme="dark" />
+      </div>
     </motion.div>
   );
 }

@@ -31,7 +31,6 @@ export function ProjectClosing({ others, next }: { others: Project[]; next: Proj
           <TransitionLink
             key={project.slug}
             href={`/projetos/${project.slug}`}
-            data-cursor="Ver"
             className="group focus-ring col-span-full md:col-span-4 xl:col-span-6"
           >
             <span className="block aspect-[3/2] overflow-hidden">

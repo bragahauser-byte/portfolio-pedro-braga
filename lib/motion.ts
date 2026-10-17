@@ -14,7 +14,7 @@ export const DURATION = {
   /** Count-up dos números. */
   count: 1.2,
   /** Cada metade da cortina de transição de página (cobrir / revelar). */
-  curtain: 0.7,
+  curtain: 0.6,
   /** Hover em cards (zoom lento). */
   hover: 1.2,
   /** Fade curto que substitui tudo com prefers-reduced-motion. */

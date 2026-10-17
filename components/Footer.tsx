@@ -1,44 +1,37 @@
-import { CONTACT_LINKS, EMAIL } from "@/lib/contact";
-import { Grid, TEXT_COLUMN, TEXT_COLUMN_WIDE } from "./Grid";
-import { FadeIn } from "./motion/FadeIn";
+import { CONTACT_LINKS } from "@/lib/contact";
+import { Grid } from "./Grid";
 
 /**
- * Rodapé de contato (âncora #contato do header), na coluna da tipografia:
- * rótulo cinza, e-mail grande clicável e LinkedIn / Instagram.
- * `theme="dark"` continua o bloco preto das páginas de projeto.
+ * Rodapé de contato (âncora #contato do header): Email, LinkedIn e
+ * Instagram numa linha, 24/32 (20/24 no mobile), alinhados com o header
+ * nas margens do grid. `theme="dark"` continua o bloco preto das páginas
+ * de projeto e o Sobre mim.
  */
 export function Footer({ theme = "light" }: { theme?: "light" | "dark" }) {
   const dark = theme === "dark";
-  const social = CONTACT_LINKS.filter((item) => item.label !== "Email");
 
   return (
     <footer
       id="contato"
-      className={`w-full pb-10 pt-20 md:pt-30 xl:pt-40 ${dark ? "theme-dark bg-night text-paper" : "bg-paper text-ink"}`}
+      className={`w-full py-6 md:py-10 ${dark ? "theme-dark bg-night text-paper" : "bg-paper text-ink"}`}
     >
       <Grid>
-        <FadeIn className={TEXT_COLUMN_WIDE}>
-          <h2 className="text-14 text-muted">Contato</h2>
-          <a
-            href={`mailto:${EMAIL}`}
-            className="link-underline focus-ring mt-4 inline-block break-all text-24 md:text-40-text"
-          >
-            {EMAIL}
-          </a>
-        </FadeIn>
-        <ul className={`${TEXT_COLUMN} mt-16 flex flex-wrap gap-x-8 gap-y-2 md:mt-24`}>
-          {social.map((item) => (
-            <li key={item.label}>
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link-underline focus-ring tap-target text-14 text-muted"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
+        <ul className="col-span-full flex flex-wrap items-center gap-x-8 gap-y-2 md:gap-x-16">
+          {CONTACT_LINKS.map((item) => {
+            const external = item.href.startsWith("http");
+            return (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  className="link-underline focus-ring tap-target text-20 text-muted md:text-24"
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </Grid>
     </footer>
