@@ -1,197 +1,34 @@
-// Shared motion constants — single source of truth so every animated
-// component (Home entrance, page transitions, scroll-reveal) uses the
-// same timing/easing language instead of one-off values scattered in JSX.
+// Linguagem de movimento única do site — todo componente animado lê daqui
+// em vez de inventar timing/easing próprios. Princípio: o movimento serve à
+// fotografia. Nada de bounce; expo-out e durações entre 0.6s e 1.2s.
 
-// ---------------------------------------------------------------------
-// Home entrance (Apple HIG — content appearing on screen)
-// The header gets real movement (fade + rise) since it's the one element
-// that should feel like it's "arriving"; everything else (hero, project
-// cards, footer) only fades softly in place — no element but the header
-// should look like it flew in from somewhere.
-// ---------------------------------------------------------------------
-export const HEADER_ENTRANCE_Y = 16; // px
-export const HEADER_ENTRANCE_DURATION = 0.3; // ~300ms
-export const CONTENT_ENTRANCE_Y = 6; // px — barely perceptible, just enough to avoid a hard pop
-export const CONTENT_ENTRANCE_DURATION = 0.35; // 300-400ms
-export const ENTRANCE_STAGGER = 0.07; // 70ms between staggered elements (60-80ms range)
-export const ENTRANCE_EASE = [0.22, 1, 0.36, 1] as const; // soft decelerate, no bounce
+export const EASE_EXPO_OUT = [0.22, 1, 0.36, 1] as const;
 
-export type EntranceRole = "header" | "content";
+export const DURATION = {
+  /** Fades de parágrafo, legendas. */
+  fade: 0.7,
+  /** Reveal de imagem (clip-path + scale). */
+  reveal: 1.1,
+  /** Linhas de título. */
+  line: 0.9,
+  /** Count-up dos números. */
+  count: 1.2,
+  /** Cada metade da cortina de transição de página (cobrir / revelar). */
+  curtain: 0.7,
+  /** Hover em cards (zoom lento). */
+  hover: 1.2,
+  /** Fade curto que substitui tudo com prefers-reduced-motion. */
+  reduced: 0.3,
+} as const;
 
-/** Per-element variants for the Home entrance stagger (header → hero → first image → footer). */
-export function entranceItemVariants(reducedMotion: boolean | null, role: EntranceRole = "content") {
-  if (reducedMotion) {
-    return {
-      hidden: { opacity: 1, y: 0 },
-      show: { opacity: 1, y: 0, transition: { duration: 0 } },
-    };
-  }
-  const y = role === "header" ? HEADER_ENTRANCE_Y : CONTENT_ENTRANCE_Y;
-  const duration = role === "header" ? HEADER_ENTRANCE_DURATION : CONTENT_ENTRANCE_DURATION;
-  return {
-    hidden: { opacity: 0, y },
-    show: { opacity: 1, y: 0, transition: { duration, ease: ENTRANCE_EASE } },
-  };
-}
+/** Atraso entre linhas de um título. */
+export const LINE_STAGGER = 0.06;
 
-/** Container variants driving the stagger between entrance children. */
-export function entranceContainerVariants(reducedMotion: boolean | null) {
-  return {
-    hidden: {},
-    show: {
-      transition: reducedMotion ? {} : { staggerChildren: ENTRANCE_STAGGER },
-    },
-  };
-}
+/** Deslocamento do parágrafo no fade de entrada. */
+export const FADE_Y = 12;
 
-// ---------------------------------------------------------------------
-// Page transitions — directional "push/pop" (Home <-> Sobre mim) vs a
-// plain crossfade (anything touching a /projetos/[slug] page).
-//
-// Home <-> Sobre mim behaves like an iOS navigation stack: Sobre mim is
-// always the "pushed" screen (enters by sliding in from the right over a
-// static Home, exits by sliding back out to the right to reveal a static
-// Home) and Home is always the "root" screen (never itself animates,
-// whichever direction the nav goes). Both screens are mounted at once
-// during the transition — this is NOT a symmetric two-sided slide.
-//
-// Any transition into or out of a project page ignores all of that and
-// just crossfades, regardless of direction.
-// ---------------------------------------------------------------------
-export type PageTransitionKind = "push" | "pop" | "fade";
+/** Escala inicial da imagem no reveal (1.08 → 1). */
+export const REVEAL_SCALE = 1.08;
 
-const PROJECT_ROUTE_PREFIX = "/projetos";
-const PUSHED_ROUTE = "/sobre-mim";
-
-function isProjectRoute(pathname: string): boolean {
-  return pathname.startsWith(PROJECT_ROUTE_PREFIX);
-}
-
-/**
- * Classifies a navigation by the pair of routes it moves between — not
- * just the destination — since Home <-> Sobre mim needs to know which
- * screen is arriving and which is leaving to pick "push" vs "pop".
- */
-export function classifyPageTransition(from: string | null, to: string): PageTransitionKind {
-  if (from === null || from === to) return "fade";
-  if (isProjectRoute(from) || isProjectRoute(to)) return "fade";
-  if (from === "/" && to === PUSHED_ROUTE) return "push";
-  if (from === PUSHED_ROUTE && to === "/") return "pop";
-  return "fade";
-}
-
-const PUSH_POP_DURATION = 0.32; // 300-350ms
-const IOS_COVER_EASE = [0.32, 0.72, 0, 1] as const; // Apple's "cover screen" curve
-const PROJECT_FADE_DURATION = 0.22; // 200-250ms
-const REDUCED_MOTION_FADE_DURATION = 0.15;
-
-// Each page sits in normal document flow once settled ("animate"), and
-// only becomes a fixed, viewport-covering overlay while it's actively
-// entering or exiting — that's what lets two pages occupy the same screen
-// space during the transition without permanently changing how the site
-// scrolls the rest of the time. Sized with `top`/`left`/`width`/`height`
-// (never `right`/`bottom`/the `inset` shorthand): framer-motion never
-// animates a property a variant doesn't mention, so once this box is back
-// to `position: relative`, whatever the overlay phase set stays in the
-// inline style — measured in the browser, a leftover `right: 0` alongside
-// `left: 0` (e.g. from the old `inset: 0` shorthand) is NOT the harmless
-// no-op it looks like: constraining BOTH horizontal edges shrank this
-// box's width by the scrollbar's width and pinned it to the left edge,
-// breaking the Grid's `mx-auto` centering (every image/text block visibly
-// off) on every client-side navigation, in production too. A leftover
-// `top: 0; left: 0` (no opposing edge ever set) is a true no-op on a
-// `position: relative` box, and a leftover `width/height: 100%` is a
-// no-op too — this wrapper's children already size themselves to 100%
-// of it in normal flow, and `height: 100%` against `<body>`'s auto
-// height doesn't resolve to anything per the CSS spec. Explicit 0/100%
-// (never "auto") throughout — framer-motion treats these as animatable
-// lengths and errors trying to tween one to "auto".
-const OVERLAY_POSITION = { position: "fixed" as const, top: 0, left: 0, width: "100%", height: "100%" };
-const STATIC_POSITION = { position: "relative" as const };
-
-/**
- * Variants for one page's wrapping <motion.div>. `pathname` is this node's
- * OWN route, closed over at render time — a node keeps referring to the
- * route it represents even after being removed from the tree (framer-motion
- * clones a removed child's last element to run its exit animation). The
- * transition `kind` for that already-removed node arrives separately, via
- * AnimatePresence's `custom` prop, since a page can't know in advance what
- * it's about to be replaced by — see PageTransition.tsx.
- */
-export function pageMotionVariants(pathname: string, reducedMotion: boolean | null) {
-  if (reducedMotion) {
-    return {
-      initial: { ...OVERLAY_POSITION, opacity: 0, zIndex: 2 },
-      animate: {
-        ...STATIC_POSITION,
-        opacity: 1,
-        zIndex: 1,
-        transition: { duration: REDUCED_MOTION_FADE_DURATION, ease: "linear" as const },
-      },
-      exit: {
-        ...OVERLAY_POSITION,
-        opacity: 0,
-        zIndex: 1,
-        transition: { duration: REDUCED_MOTION_FADE_DURATION, ease: "linear" as const },
-      },
-    };
-  }
-
-  const isPushedRoute = pathname === PUSHED_ROUTE;
-
-  return {
-    initial: (kind: PageTransitionKind) =>
-      kind === "fade"
-        ? { ...OVERLAY_POSITION, x: 0, opacity: 0, zIndex: 2 }
-        : {
-            ...OVERLAY_POSITION,
-            x: isPushedRoute ? "100%" : 0,
-            opacity: 1,
-            zIndex: isPushedRoute ? 2 : 1,
-          },
-    animate: (kind: PageTransitionKind) =>
-      kind === "fade"
-        ? {
-            ...STATIC_POSITION,
-            x: 0,
-            opacity: 1,
-            zIndex: 1,
-            transition: { duration: PROJECT_FADE_DURATION, ease: "easeOut" as const },
-          }
-        : {
-            ...STATIC_POSITION,
-            x: 0,
-            opacity: 1,
-            zIndex: isPushedRoute ? 2 : 1,
-            transition: { duration: PUSH_POP_DURATION, ease: IOS_COVER_EASE },
-          },
-    exit: (kind: PageTransitionKind) =>
-      kind === "fade"
-        ? {
-            ...OVERLAY_POSITION,
-            x: 0,
-            opacity: 0,
-            zIndex: 1,
-            transition: { duration: PROJECT_FADE_DURATION, ease: "easeOut" as const },
-          }
-        : isPushedRoute
-          ? {
-              // Sobre mim exiting (a "pop"): slides back out to the right,
-              // revealing the already-static Home underneath.
-              ...OVERLAY_POSITION,
-              x: "100%",
-              opacity: 1,
-              zIndex: 2,
-              transition: { duration: PUSH_POP_DURATION, ease: IOS_COVER_EASE },
-            }
-          : {
-              // Home exiting (a "push"): stays completely put — it's just
-              // covered by Sobre mim sliding in on top of it.
-              ...OVERLAY_POSITION,
-              x: 0,
-              opacity: 1,
-              zIndex: 1,
-              transition: { duration: PUSH_POP_DURATION, ease: IOS_COVER_EASE },
-            },
-  };
-}
+/** Amplitude do parallax das imagens grandes (±7%). */
+export const PARALLAX_RANGE = 7;
