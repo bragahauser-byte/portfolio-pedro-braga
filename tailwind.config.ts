@@ -1,8 +1,20 @@
 import type { Config } from "tailwindcss";
 
-// Design tokens extracted from the Figma file.
-// Grid: 80px side margin, 6 columns, 20px gutter (desktop).
-// On smaller screens the grid collapses proportionally — see Grid.tsx.
+// Design tokens medidos nas referências da Idea Zarvos (referencia de projeto/).
+//
+// Grid: 12 colunas ≥1280px (margem 80px, gutter 20px), 8 no tablet
+// (margem 40px), 4 no mobile (margem 20px, gutter 16px). Valores em CSS vars
+// (app/globals.css, --grid-*), lidos pelo Grid.tsx e pelo overlay (tecla G).
+//
+// Regra da tipografia: todo texto começa SEMPRE na mesma coluna — a 5 no
+// desktop, a 3 no tablet, a margem no mobile (ver TEXT_COLUMN em Grid.tsx).
+// Só as imagens mudam de posição.
+//
+// Tamanhos: 12, 14, 16 e daí em múltiplos de 4; entrelinhas e espaçamentos
+// sempre em múltiplos de 4 (a escala padrão do Tailwind já é de 4 em 4px).
+const tight = "-0.02em";
+const tighter = "-0.03em";
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,61 +25,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Base
-        ink: "#000000", // primary text on light backgrounds
-        paper: "#FFFFFF", // Home background / text on dark backgrounds
-        // Reads via a CSS var (globals.css) so the SAME class stays WCAG AA
-        // compliant on both backgrounds: #636363 on white is 6.0:1, but only
-        // ~3.3:1 on #0C0C0C (needs 4.5:1) — the .theme-dark scope swaps it
-        // for a lighter #8A8A8A (5.67:1) instead of introducing a second class.
-        muted: "var(--color-muted)",
-        night: "#0C0C0C", // Sobre mim background
+        ink: "#000000", // texto (medido: #000000)
+        paper: "#FFFFFF",
+        night: "#000000", // seções escuras
+        muted: "#999999", // texto secundário (medido: #999999)
+        rule: "#EEEEEE", // fios da ficha técnica (medido: #EEEEEE)
+        drawing: "#F4F3F0", // fundo dos desenhos técnicos
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "Helvetica", "Arial", "sans-serif"],
+        sans: ["var(--font-helvetica-now)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
       },
       fontSize: {
-        // [fontSize, { lineHeight, letterSpacing }]
-        // Shared by Header AND Footer (nav-level links) — read from this
-        // one token in both so they can't drift out of sync again.
-        "header-name": ["24px", { lineHeight: "29px" }],
-        hero: ["32px", { lineHeight: "39px" }],
-        "name-xl": ["96px", { lineHeight: "116px", letterSpacing: "-0.05em" }],
-        bio: ["32px", { lineHeight: "39px" }],
-        caption: ["20px", { lineHeight: "24px" }],
-        // Project pages (Figma "Tela projeto")
-        "section-title": ["32px", { lineHeight: "39px" }],
-        "stat-number": ["112px", { lineHeight: "136px", letterSpacing: "-0.05em" }],
-        "stat-unit": ["48px", { lineHeight: "58px", letterSpacing: "-0.05em" }],
+        // [tamanho, { entrelinha, tracking }] — nome = tamanho em px.
+        12: ["12px", { lineHeight: "16px" }],
+        14: ["14px", { lineHeight: "20px" }],
+        16: ["16px", { lineHeight: "24px" }],
+        "16-tight": ["16px", { lineHeight: "20px" }],
+        20: ["20px", { lineHeight: "24px" }],
+        "20-loose": ["20px", { lineHeight: "28px" }],
+        24: ["24px", { lineHeight: "32px" }],
+        28: ["28px", { lineHeight: "40px" }],
+        32: ["32px", { lineHeight: "40px" }],
+        40: ["40px", { lineHeight: "44px", letterSpacing: tight }],
+        "40-text": ["40px", { lineHeight: "48px" }],
+        56: ["56px", { lineHeight: "56px", letterSpacing: tight }],
+        80: ["80px", { lineHeight: "80px", letterSpacing: tighter }],
+        120: ["120px", { lineHeight: "120px", letterSpacing: tighter }],
       },
       spacing: {
-        "grid-margin": "80px",
-        "grid-margin-sm": "16px",
-        gutter: "20px",
-        "gutter-sm": "16px",
-        // Vertical rhythm — applied as real padding-top in document flow
-        // (never as a flex/grid gap, so these stay exact and predictable).
-        // Shared by Header (pt only — bottom spacing is the 164px content
-        // gap below) AND Footer (py, since it's the page's closing block).
-        // One token, one value — editing it can't desync the two again.
-        "nav-padding-y": "40px",
-        "header-to-content": "164px", // header → hero text (Home) / header → bio (Sobre mim)
-        "hero-to-image": "132px", // hero text → first project image (Home)
-        "section-spacing": "132px", // vertical rhythm between blocks on project pages (Figma)
-        // Minimum distance between the last piece of page content and the
-        // footer, on every page — one token so it can't drift per-page.
-        "before-footer": "232px",
-        // Gap between Email/LinkedIn/Instagram in the footer — deliberately
-        // its own value, distinct from the header's nav gap (gap-16/64px).
-        "footer-gap": "112px",
-        // Vertical gap between the two photos in the "assimetrica-aberta"
-        // project-gallery variant (Figma: 80-120px, picked the midpoint) —
-        // deliberately much larger than the standard 20px gutter, since the
-        // two photos must read as separate editorial moments, not a pair.
-        "asymmetric-gap": "96px",
+        // complementos da escala de 4px do Tailwind
+        30: "120px",
+        45: "180px",
+        "grid-margin": "var(--grid-margin)",
+        gutter: "var(--grid-gutter)",
+      },
+      borderRadius: {
+        image: "0px", // a referência usa cantos retos
       },
       maxWidth: {
         site: "1920px",
+        // largura máxima medida das linhas de texto da referência (~680px)
+        text: "680px",
+        small: "480px",
+      },
+      transitionTimingFunction: {
+        "expo-out": "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     },
   },

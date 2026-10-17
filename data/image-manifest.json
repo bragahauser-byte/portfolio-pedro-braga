@@ -1,0 +1,362 @@
+{
+  "/images/projects/area-gourmet-gj/corte-a-tecnico.png": {
+    "width": 1169,
+    "height": 825,
+    "base": "/images/optimized/area-gourmet-gj/corte-a-tecnico",
+    "widths": [
+      640,
+      1080,
+      1169
+    ]
+  },
+  "/images/projects/area-gourmet-gj/corte-b-tecnico.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/area-gourmet-gj/corte-b-tecnico",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/area-gourmet-gj/cozinha-ilha-detalhe.jpg": {
+    "width": 1600,
+    "height": 811,
+    "base": "/images/optimized/area-gourmet-gj/cozinha-ilha-detalhe",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/area-gourmet-gj/cozinha-sala-de-jogos.jpg": {
+    "width": 1600,
+    "height": 758,
+    "base": "/images/optimized/area-gourmet-gj/cozinha-sala-de-jogos",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/area-gourmet-gj/estudo-croqui-tecnico.jpg": {
+    "width": 1600,
+    "height": 784,
+    "base": "/images/optimized/area-gourmet-gj/estudo-croqui-tecnico",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/area-gourmet-gj/lounge-spa-fogueira.jpg": {
+    "width": 1797,
+    "height": 1288,
+    "base": "/images/optimized/area-gourmet-gj/lounge-spa-fogueira",
+    "widths": [
+      640,
+      1080,
+      1600,
+      1797
+    ]
+  },
+  "/images/projects/area-gourmet-gj/planta-baixa.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/area-gourmet-gj/planta-baixa",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/area-gourmet-gj/spa-pergolado-noturno.jpg": {
+    "width": 1600,
+    "height": 784,
+    "base": "/images/optimized/area-gourmet-gj/spa-pergolado-noturno",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/area-gourmet-gj/varanda-gourmet-noturna.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/area-gourmet-gj/varanda-gourmet-noturna",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/eixo-oratorio/cobertura-vista-aerea.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/eixo-oratorio/cobertura-vista-aerea",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/eixo-oratorio/corte-a-tecnico.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/corte-a-tecnico",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/corte-b-tecnico.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/corte-b-tecnico",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/elevacao-leste.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/elevacao-leste",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/elevacao-norte.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/elevacao-norte",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/elevacao-oeste.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/elevacao-oeste",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/elevacao-sul.png": {
+    "width": 1704,
+    "height": 864,
+    "base": "/images/optimized/eixo-oratorio/elevacao-sul",
+    "widths": [
+      640,
+      1080,
+      1600,
+      1704
+    ]
+  },
+  "/images/projects/eixo-oratorio/fachada-capa-conjunto-aereo.jpg": {
+    "width": 1543,
+    "height": 887,
+    "base": "/images/optimized/eixo-oratorio/fachada-capa-conjunto-aereo",
+    "widths": [
+      640,
+      1080,
+      1543
+    ]
+  },
+  "/images/projects/eixo-oratorio/fachada-rua-angulo-alternativo.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/eixo-oratorio/fachada-rua-angulo-alternativo",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/eixo-oratorio/fachada-rua-diurna.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/eixo-oratorio/fachada-rua-diurna",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/eixo-oratorio/fachadas-comparativo.jpg": {
+    "width": 1784,
+    "height": 1249,
+    "base": "/images/optimized/eixo-oratorio/fachadas-comparativo",
+    "widths": [
+      640,
+      1080,
+      1600,
+      1784
+    ]
+  },
+  "/images/projects/eixo-oratorio/implantacao-vista-aerea.jpg": {
+    "width": 1543,
+    "height": 887,
+    "base": "/images/optimized/eixo-oratorio/implantacao-vista-aerea",
+    "widths": [
+      640,
+      1080,
+      1543
+    ]
+  },
+  "/images/projects/eixo-oratorio/legenda-tipologias-apartamento.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/legenda-tipologias-apartamento",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/passagem-publica-terreo.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/eixo-oratorio/passagem-publica-terreo",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-coberturas.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-coberturas",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-pavimento-tipo-residencial.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-pavimento-tipo-residencial",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-pavimento-tipo.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-pavimento-tipo",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-primeiro-pavimento.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-primeiro-pavimento",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-segundo-pavimento.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-segundo-pavimento",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-subsolo-estacionamento.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-subsolo-estacionamento",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/planta-terreo-comercial.jpg": {
+    "width": 2400,
+    "height": 1607,
+    "base": "/images/optimized/eixo-oratorio/planta-terreo-comercial",
+    "widths": [
+      640,
+      1080,
+      1600,
+      2400
+    ]
+  },
+  "/images/projects/eixo-oratorio/praca-acesso-paisagismo.jpg": {
+    "width": 1797,
+    "height": 1290,
+    "base": "/images/optimized/eixo-oratorio/praca-acesso-paisagismo",
+    "widths": [
+      640,
+      1080,
+      1600,
+      1797
+    ]
+  },
+  "/images/projects/eixo-oratorio/vista-aerea-metro-alternativa.jpg": {
+    "width": 1796,
+    "height": 1196,
+    "base": "/images/optimized/eixo-oratorio/vista-aerea-metro-alternativa",
+    "widths": [
+      640,
+      1080,
+      1600,
+      1796
+    ]
+  },
+  "/images/projects/eixo-oratorio/vista-aerea-torres-contexto.jpg": {
+    "width": 1190,
+    "height": 1249,
+    "base": "/images/optimized/eixo-oratorio/vista-aerea-torres-contexto",
+    "widths": [
+      640,
+      1080,
+      1190
+    ]
+  },
+  "/images/projects/eixo-oratorio/vista-aerea-torres-metro.jpg": {
+    "width": 1600,
+    "height": 800,
+    "base": "/images/optimized/eixo-oratorio/vista-aerea-torres-metro",
+    "widths": [
+      640,
+      1080,
+      1600
+    ]
+  }
+}

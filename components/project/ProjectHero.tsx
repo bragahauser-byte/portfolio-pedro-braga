@@ -1,32 +1,32 @@
-import { Grid } from "@/components/Grid";
-import { LightboxImage } from "@/components/project/LightboxImage";
+import { Grid, TEXT_COLUMN, TEXT_COLUMN_WIDE } from "@/components/Grid";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { SplitLines } from "@/components/motion/SplitLines";
 import type { Project } from "@/data/projects";
 
+/**
+ * Abertura do projeto, medida na referência (Idea Zarvos, "Edifício Oito"):
+ * título 120px, frase de abertura 20/24 e linha cinza 14/20 — tudo na
+ * coluna da tipografia. Desktop: título → frase 80px, frase → cinza 16px.
+ */
 export function ProjectHero({ project }: { project: Project }) {
   return (
-    <>
-      {/* Estilo provisório — será substituído pelo CSS exportado do Figma */}
-      <section className="pb-hero-to-image pt-header-to-content">
-        <Grid>
-          <div className="project-hero-title col-span-2 flex flex-col gap-6 sm:col-span-6 sm:gap-12">
-            <h1 className="text-2xl leading-[28px] tracking-[-0.02em] text-ink sm:text-name-xl sm:leading-[96px]">
-              {project.title}
-            </h1>
-            <div className="project-hero-summary flex flex-col gap-4 sm:max-w-[791px] sm:gap-6">
-              <p className="text-xl leading-[28px] text-ink sm:text-hero">
-                {project.subtitle}
-              </p>
-              <p className="text-caption text-muted">{project.shortText}</p>
-            </div>
-          </div>
-        </Grid>
-      </section>
-
+    <section className="pt-20 md:pt-24 xl:pt-28">
       <Grid>
-        <div className="project-hero-image col-span-2 relative aspect-[3/2] w-full overflow-hidden bg-[#8D8D8D] mobile-bleed sm:col-span-6">
-          <LightboxImage src={project.heroImage} alt={project.heroImageAlt} priority />
+        <SplitLines
+          text={project.title}
+          immediate
+          delay={0.15}
+          className={`${TEXT_COLUMN_WIDE} text-balance text-40 md:text-80 xl:text-120`}
+        />
+        <div className={`${TEXT_COLUMN} mt-6 md:mt-12 xl:mt-20`}>
+          <FadeIn as="p" immediate delay={0.45} className="max-w-text text-pretty text-16 md:text-20">
+            {project.subtitle}
+          </FadeIn>
+          <FadeIn as="p" immediate delay={0.55} className="mt-4 max-w-text text-16-tight text-muted md:text-14">
+            {project.shortText}
+          </FadeIn>
         </div>
       </Grid>
-    </>
+    </section>
   );
 }
